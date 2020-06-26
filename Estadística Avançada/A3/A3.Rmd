@@ -1,0 +1,575 @@
+---
+title: "A3"
+author: "Marc Garrido Casas"
+date: "11/5/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load}
+setwd("C:/Users/garridom/Documents/UOC/Estadistica/A3")
+df <- read.csv("BWprocessed.csv", header = TRUE, sep = ',', row.names=1)
+head(df)
+```
+
+## 1 Model de regressió lineal
+### 1.1 Model de regressió lineal univariant
+
+a) Estimar per mínims quadrats ordinaris un model lineal que expliqui la variable pes del bebè en néixer en funció del diàmetre abdominal (AD) abans de néixer. S’avaluarà la bondat de l’ajust, a partir del coeficient de determinació.
+
+```{r 1.1.a}
+library(ggpubr)
+theme_set(theme_pubr())
+
+ggplot(df, aes(x = BW, y = AD)) + geom_point() + stat_smooth(method = lm)
+
+```
+
+```{r 1.1.a.2}
+cor(df$BW, df$AD)
+
+coeficientDeterminacio = cor(df$BW, df$AD)*cor(df$BW, df$AD)
+coeficientDeterminacio
+```
+
+b) Posteriorment, es dividirà la mostra en dues, segons el sexe del bebè i es repetirà l’estudi per a cada mostra per separat. Raonar els resultats.
+
+```{r 1.1.b}
+X<-split(df, df$Sex)
+
+ggplot(X[[1]], aes(x = BW, y = AD)) + geom_point() + stat_smooth(method = lm)
+ggplot(X[[2]], aes(x = BW, y = AD)) + geom_point() + stat_smooth(method = lm)
+
+cor(X[[1]]$BW, X[[1]]$AD)
+coeficientDeterminacioF = cor(X[[1]]$BW, X[[1]]$AD)*cor(X[[1]]$BW, X[[1]]$AD)
+
+cor(X[[2]]$BW, X[[2]]$AD)
+coeficientDeterminacioM = cor(X[[2]]$BW, X[[2]]$AD)*cor(X[[2]]$BW, X[[2]]$AD)
+
+```
+
+
+```{r 1.1.b.2}
+coeficientDeterminacioF
+coeficientDeterminacioM
+```
+
+
+Pel que sembla, el fet de que el nadó sigui mascle, té un xic més en el valor del coeficient de determinació entre el seu pes i el diàmetre abdominal. 
+
+Doncs llavors, no crec que influeixi garie ,però la proporció de variació de la variable del diàmetre abdominal explicada pel pes, és lleugerament més gran en mascles que en femelles.
+
+
+
+### 1.2 Model de regressió lineal múltiple (regresors quantitatius)
+
+a) Estimar per mínims quadrats ordinaris un model lineal que expliqui la variable pes del bebè en funció del diàmetre abdominal (AD) i el diàmetre biparietal (BPD). Es procedirà a avaluar la bondat d’ajust a través del coeficient de determinació ajustat. Discutir si es produeix una millora del model.
+
+```{r 1.2.a}
+df = df[,c("BW","AD","BPD")]
+pairs(df, labels=c("BW","AD","BPD"), main='Matriu de dispersió', cex.main=0.8, cex = 1.5, pch = 20, bg="light blue", cex.labels = 1, font.labels=1)
+
+```
+
+```{r 1.2.bb}
+panel.cor <- function(AD, BW, digits=2, prefix="", cex.cor){
+  par(usr = c(0, 1, 0, 1))
+  r <- abs(cor(AD, BW))
+  txt <- format(c(r, 0.123456789), digits=digits)[1]
+  txt <- paste(prefix, txt, sep="")
+  if(missing(cex.cor))
+  cex <- 0.8/strwidth(txt)
+  text(0.5, 0.5, txt, cex = cex)
+}
+
+pairs(df, lower.panel=panel.smooth, upper.panel=panel.cor, 
+      main="Matriz de dispersión con correlaciones")
+```
+
+```{r 1.2.c}
+mod <- lm(BW ~ AD + BPD, data = df)
+
+summary(mod)
+```
+Vec que R^2 és 0.8 respecte el 0.77 anterior.
+
+
+b) Estudiar l’existència o no de multicolinealitat entre les covariables del model anterior, AD i BPD. Podeu usar el package faraway.
+
+```{r 1.2.b}
+#install.packages("car")
+library(car)
+vif(mod)
+```
+
+VIF = 1: Ausencia total de colinialidad
+1 < VIF < 5: La regresión puede verse afectada por cierta colinialidad.
+
+Amb una variancia d'inflació tant curta, 2.18, podem asumir que no existeix una multicolinealitat forta.
+
+
+### 1.3 Model de regressió lineal múltiple (regresors quantitatius i qualitatius)
+
+a) Volem conèixer en quina mesura es relaciona el pes, en funció del diàmetre abdominal, diàmetrebiparietal i les setmanes de gestació. Es recodificará la variable Ge, en menor i major o igual de 35setmanes. Aplicar un model de regressió lineal múltiple i explicar el resultat.
+
+```{r 1.3.a.1}
+df <- read.csv("BWprocessed.csv", header = TRUE, sep = ',', row.names=1)
+df = df[,c("BW","AD","Ge")]
+df$Ge[df$Ge<35] <- 0
+df$Ge[df$Ge>=35] <- 1
+head(df)
+```
+
+```{r 1.3.a.2}
+panel.cor <- function(AD, BW, digits=2, prefix="", cex.cor){
+  par(usr = c(0, 1, 0, 1))
+  r <- abs(cor(AD, BW))
+  txt <- format(c(r, 0.123456789), digits=digits)[1]
+  txt <- paste(prefix, txt, sep="")
+  if(missing(cex.cor))
+  cex <- 0.8/strwidth(txt)
+  text(0.5, 0.5, txt, cex = cex)
+}
+
+pairs(df, lower.panel=panel.smooth, upper.panel=panel.cor, 
+      main="Matriz de dispersión con correlaciones")
+```
+
+
+```{r 1.3.a.3}
+mod <- lm(BW ~ AD + Ge, data = df)
+
+summary(mod)
+```
+
+Primerament és difícil de mostrar una regresió lineal si els valors són solsament zeros i uns. Els valors d'estimació, error estàndard... es disparen. No crec que sigui massa bona idea transformar una variable numèrica d'un rang ampli, a transformar-ho en 0 o 1 per mitjà d'una condició.
+
+
+b) Ara es calcularà el model de regressió lineal que relacioni el pes amb diàmetre abdominal i diàmetre biparietal, per a la mostra els bebès de la qual han nascut abans de les 35 setmanes. Posteriorment, es calcularà el mateix model, per als bebès nascuts en la setmana 35 i posteriors. En vista dels resultats obtinguts, existeix relació amb l’apartat a)? Raonar la resposta.
+
+```{r 1.3.b.1}
+df <- read.csv("BWprocessed.csv", header = TRUE, sep = ',', row.names=1)
+df = df[,c("BW","AD","BPD","Ge")]
+head(df)
+
+X<-split(df, df$Ge<35)
+df = df[,c("BW","AD","BPD")]
+
+X[[1]] = X[[1]][,c("BW","AD","BPD")]
+X[[2]] = X[[2]][,c("BW","AD","BPD")]
+
+```
+
+
+```{r 1.3.b.2}
+mod1 <- lm(BW ~ AD + BPD, data = X[[1]])
+summary(mod1)
+
+mod2 <- lm(BW ~ AD + BPD, data = X[[2]])
+summary(mod2)
+```
+
+És curiós, per a nadons nascuts abans de les 35 setmanes, el summary és prou dolent. Per a nadons nascuts posteriors a les 35 setmanes, el summary és prou bo. En canvi, comparant-lo amb l'apartat anterior, el summary també és molt dolent, l'algoritme no és massa intel·ligent per a separar el dataset entre dos per mitjà d'una columna de booleans. És molt millor donar-li "mastegat", pre preparar el dataset quant sigui possible abans de fer aquestes regressions i afegir més entropia.
+
+
+### 1.4 Diagnosi del model
+
+Es prendrà el model de l’apartat 1.2, que relaciona el pes del bebè en funció del diàmetre abdominal i el diàmetre biparietal. Per a la diagnosi d’aquest model es faran dos gràfics: un amb els valors ajustats enfront dels residus (que ens permetrà veure si la variància és constant) i el gràfic quantil-quantil que compara els residus del model amb els valors d’una variable que es distribueix normalment(QQ plot). Explicar conclusions a partir dels gràfics obtinguts.
+
+```{r 1.4.a}
+df <- read.csv("BWprocessed.csv", header = TRUE, sep = ',', row.names=1)
+df = df[,c("BW","AD","BPD")]
+mod <- lm(BW ~ AD + BPD, data = df)
+
+summary(mod)
+```
+
+```{r 1.4.b}
+anova(mod)
+
+library(ggplot2)
+library(gridExtra)
+plot1 <- ggplot(data = df, aes(AD, mod$residuals)) +
+    geom_point() + geom_smooth(color = "firebrick") + geom_hline(yintercept = 0) +
+    theme_bw()
+plot1
+
+plot2 <- ggplot(data = df, aes(BPD, mod$residuals)) +
+    geom_point() + geom_smooth(color = "firebrick") + geom_hline(yintercept = 0) +
+    theme_bw()
+plot2
+
+```
+
+
+
+```{r 1.4.c}
+qqnorm(mod$residuals)
+qqline(mod$residuals)
+```
+
+Observant els primers gràfics del residu, no acaba d'adaptar-se del tot l'eix X.
+Pel gràfic quantil-quantil, veiem que els punts segueixen més la recta, excepte uns quants punts a l'extrem esquerre i uns bastant més a la dreta que s'allunyen prou de la recta.
+
+No m'atreviria dir que es distribueix de forma normal per la raó que he esmentat anteriorment.
+
+
+
+### 1.5 Predicció del model
+
+Segons el model de l’apartat 1.3, calcular el pes d’un bebè amb AD de 94 i BPD de 75, nascut en la setmana 34 de gestació.
+
+```{r 1.5.a}
+df <- read.csv("BWprocessed.csv", header = TRUE, sep = ',', row.names=1)
+df = df[,c("BW","AD","BPD","Ge")]
+
+mod <- lm(BW ~ AD + BPD, data = df)
+
+pred.frame <- data.frame(AD=94, BPD=75, Ge=34)
+pc <- predict(mod, int="c", newdata=pred.frame)
+pc
+```
+
+fit es refereix al valor mig predit, mentre que lwr i upr es refereis als límits inferior i superior de l'interval predit.
+
+
+
+
+## 2 Model de regressió logística
+
+### 2.1 Estimació de OR (Odds Ràtio)
+
+Es vol estudiar la probabilitat de tenir un bebè amb baix pes (aquells que són inferiors a 2.5 kg). Per a avaluar-la, primer es realitzarà una anàlisi crua dels possibles factors de risc.
+
+a) Estudiar la relació entre el baix pes i cadascuna de les variables següents:
+• a.1) si la mare és fumadora (Sm)
+
+```{r 2.1.a.1.0}
+my.chisq <- function( x, y ){
+  n00 <- sum( (x==0) & (y==0) )
+  n11 <- sum( (x==1) & (y==1) )
+  n01 <- sum( (x==0) & (y==1) )
+  n10 <- sum( (x==1) & (y==0) )
+  cat("Table values:", n00, " ", n01, " ", n10, " ", n11, "\n")
+  nx0 <- sum( x==0)
+  nx1 <- sum( x==1)
+  ny0 <- sum( y==0)
+  ny1 <- sum( y==1)
+  cat(nx0, " ", nx1, " ", ny0, " ", ny1, "\n")
+  total = sum(nx0, nx1)
+  e00 <- (nx0*ny0) / total
+  e01 <- (nx0*ny1) / total
+  e10 <- (nx1*ny0) / total
+  e11 <- (nx1*ny1) / total
+  cat("Expected values:", e00, " ", e01, " ", e10, " ", e11, "\n")
+  chisq <- (n00-e00)^2 / e00 + (n01-e01)^2/e01 + (n10-e10)^2/e10 + (n11-e11)^2/e11
+  df <- 1
+  cat("chisq: ", chisq)
+  return (chisq)
+}
+```
+
+
+```{r 2.1.a.1.1}
+df <- read.csv("BWprocessed.csv", header = TRUE, sep = ',', row.names=1)
+
+#Preparació de les dades: selecció dels casos amb baix pes en néixer
+alfa <- 0.05
+df$lower.BW <- (df$BW < 2500)
+
+#Es crea un data frame amb dues columnes: baix pes i mare fumadora
+data <- df[, c("lower.BW" , "Sm")]
+
+#Es codifiquen els valors com 0 i 1.
+data$lower.BW <- ifelse( data$lower.BW==TRUE, 1, 0)
+data$Sm <- ifelse( data$Sm=='S', 1, 0)
+
+#La funció chisq retorna el valor observat
+chisq <- my.chisq( data$lower.BW, data$Sm )
+```
+
+
+```{r 2.1.a.1.2}
+table <- table( data$lower.BW, data$Sm)
+table
+```
+
+```{r 2.1.a.1.3}
+#Si la mare no es fumadora, la probabilitat que sigui de baix pes:
+normalOdds = (47/238)/(191/238)
+normalOdds
+log(normalOdds)
+
+#Si la mare es fumadora:
+normalOdds = (60/62)/(2/62)
+normalOdds
+log(normalOdds)
+
+#El ratio és:
+30/0.2460733
+log(30/0.2460733)
+```
+
+Less odds son 4.8 contra un, 4.8 cops més de tenir un nadó de baix pes si la mare és fumadora.
+
+
+• a.2) sexe
+
+
+```{r 2.1.b.1.1}
+df <- read.csv("BWprocessed.csv", header = TRUE, sep = ',', row.names=1)
+
+#Preparació de les dades: selecció dels casos amb baix pes en néixer
+alfa <- 0.05
+df$lower.BW <- (df$BW < 2500)
+
+#Es crea un data frame amb dues columnes: baix pes i mare fumadora
+data <- df[, c("lower.BW" , "Sex")]
+
+#Es codifiquen els valors com 0 i 1.
+data$lower.BW <- ifelse( data$lower.BW==TRUE, 1, 0)
+data$Sex <- ifelse( data$Sex=='F', 1, 0)
+
+#La funció chisq retorna el valor observat
+chisq <- my.chisq( data$lower.BW, data$Sex )
+```
+
+```{r 2.1.b.1.2a}
+table <- table( data$lower.BW, data$Sex)
+table
+```
+
+```{r 2.1.b.1.3}
+normalOdds = 51/81
+normalOdds
+log(normalOdds)
+
+normalOdds = 56/112
+normalOdds
+log(normalOdds)
+
+#El ratio és:
+0.5/0.6296296
+log(0.5/0.6296296)
+```
+
+0.23 cops menys de probabilitats de tenir un nadó de baix pes si el nadó es femella.
+
+
+• a.3) setmanes de gestació (Ge), (Es dividirà entre menor i major o igual de 35 setmanes)
+
+```{r 2.1.c.1.1}
+df <- read.csv("BWprocessed.csv", header = TRUE, sep = ',', row.names=1)
+
+#Preparació de les dades: selecció dels casos amb baix pes en néixer
+alfa <- 0.05
+df$lower.BW <- (df$BW < 2500)
+
+#Es crea un data frame amb dues columnes: baix pes i mare fumadora
+data <- df[, c("lower.BW" , "Ge")]
+
+#Es codifiquen els valors com 0 i 1.
+data$lower.BW <- ifelse( data$lower.BW==TRUE, 1, 0)
+data$Ge <- ifelse( data$Ge<35, 1, 0)
+
+#La funció chisq retorna el valor observat
+chisq <- my.chisq( data$lower.BW, data$Ge )
+```
+
+```{r 2.1.b.1.2}
+table <- table( data$lower.BW, data$Ge)
+table
+```
+
+```{r 2.1.c.1.3}
+normalOdds = 5/156
+normalOdds
+log(normalOdds)
+
+normalOdds = 102/37
+normalOdds
+log(normalOdds)
+
+#El ratio és:
+0.03205128/2.756757
+log(0.03205128/2.756757)
+```
+
+4.45 més probabilitats de tenir un nadó de baix pes si ha nascut abans de les 25 setmanes de gestació.
+
+
+Es demana:
+Estimar i interpretar les OR en cada cas. Per a comprovar si existeix associació entre la variable dependent i cadascuna de les variables explicatives, s’aplicarà el test Chi-quadrat de Pearson. Un resultat significatiu ens dirà que existeix associació. Posteriorment, per a conèixer el grau d’aquesta associació, es calcularà les OR.
+
+NOTA: Per al càlcul de les OR, es partirà de la taula de contingència i es calcularà a partir de la seva fórmula.
+
+b) Si no s’hi hagués recodificado la variable setmanes de gestació, podríem seguir el procediment anterior per al càlcul de la OR? Explicar la resposta.
+
+No, per fer un càlcul de Odds Ratio, necessitem una regressió logística, i per tenir una regressió logística, necessitem que la variable sigui binària, zeros o uns. La variable de setmanes de gestació és una variable numèrica que ocupa un rang de valors més grans que dos nombres, per tant no hi podriem fer uan regressió logñistica. 
+
+
+c) Si volem veure la relació entre baix pes i lloc de procedència, podríem seguir el procediment anterior
+per al càlcul de la OR? En el cas que la resposta fos negativa, quina seria una solució?
+
+No, per a fer un càlcul d'OR, necessitem una relació logistica i per això necesitem una variable de dos nombres, zeros i uns. Si tenim una variable categòrica on tenim molts possibles valors per un atribut no númèric, ens serà impossible separar-los en zeros i uns.
+
+Una possible solució podria ser fer un atribut per a cada lloc de procedència i posar un 1 si és d'allà, un 0 si no ho és. Llavors podrem veure la relació amb un lloc de procedència en concret. Podriem adaptar això per fer-ho amb tots els llocs de procedència per separats. Un altre forma seria separar el lloc de procedència entre per exemple, est d'Espnaña o oest d'España, però possiblement perdriem informació o else resultats no serien valorables.
+
+### 2.2 Model de regressió logística
+
+a) Estimar el model de regressió logística prenent com a variable dependent, tenir sota pes en néixer o no i sent la variable explicativa, fumar o no. Podem considerar que el fet de fumar és un factor de risc de baix pes? Justifica la teva resposta. Té relació amb l’obtingut en l’apartat anterior?
+
+```{r 2.2.a.1}
+df <- read.csv("BWprocessed.csv", header = TRUE, sep = ',', row.names=1)
+
+#Preparació de les dades: selecció dels casos amb baix pes en néixer
+alfa <- 0.05
+df$lower.BW <- (df$BW < 2500)
+
+#Es crea un data frame amb dues columnes: baix pes i mare fumadora
+data <- df[, c("lower.BW" , "Sm")]
+
+#Es codifiquen els valors com 0 i 1.
+data$lower.BW <- ifelse( data$lower.BW==TRUE, 1, 0)
+data$Sm <- ifelse( data$Sm=='S', 1, 0)
+
+#La funció chisq retorna el valor observat
+chisq <- my.chisq( data$lower.BW, data$Sm )
+```
+
+```{r 2.2.a.2}
+# Ajuste de un modelo logístico.
+mod <- glm(lower.BW ~ Sm, data = df, family = "binomial")
+summary(mod)
+```
+
+En efecte, em surt un 4.8 de probabilitats de que el nadó neixi amb baix pes si la mare és fumadora. 
+Igual que en l'apartat anterior.
+
+
+b) Afegim al model anterior la variable contínua diàmetre abdominal (AD). S’observa una millora del model? Explicar. Realitzeu també el càlcul de les OR i el seu interval de confiança.
+
+```{r 2.2.b.1}
+df$AD <- ifelse( df$AD<85, 1, 0)
+
+tabla <- table(data$lower.BW, df$AD,
+               dnn = c("Baix pes","AD"))
+addmargins(tabla)
+```
+```{r 2.2.b.2}
+normalOdds = 13/167
+normalOdds
+log(normalOdds)
+
+normalOdds = 94/26
+normalOdds
+log(normalOdds)
+
+#El ratio és:
+0.07784431/3.615385
+log(0.07784431/3.615385)
+```
+
+La relació amb pes i poc diàmentre abdominal també és evident.
+
+```{r 2.2.b.3}
+mod2b <- glm(lower.BW ~ Sm + AD, data = df,
+                  family = "binomial")
+summary(mod2b)
+
+confint(mod2b)
+```
+
+Canvia lleugerament la relació de si la mare és fumadora que afecti al pes del nen, pasa del 4.8 al 3.46 si li afegim el diàmetre abdominal.
+
+
+c) Ara afegim al model anterior la variable City. Es prendrà com a ciutat de referència Barcelona. Càlcul de les OR. S’observa una millora del model? Explicar.
+
+```{r 2.2.c.1}
+df$City <- ifelse( df$City=="Barcelona", 1, 0)
+
+tabla <- table(data$lower.BW, df$City,
+               dnn = c("Baix pes","City"))
+addmargins(tabla)
+```
+```{r 2.2.c.2}
+normalOdds = 61/112
+normalOdds
+log(normalOdds)
+
+normalOdds = 46/81
+normalOdds
+log(normalOdds)
+
+#El ratio és:
+0.5446429/0.5679012
+log(0.5446429/0.5679012)
+```
+
+0.04181711, no sembla que tingui relació el pes del nadó amb el lloc de naixement, especialment "Barcelona".
+
+```{r 2.2.c.3}
+mod3b <- glm(lower.BW ~ Sm + AD + City, data = df,
+                  family = "binomial")
+summary(mod3b)
+```
+
+No hi ha gaires cambis obiament, ja hem vist amb les OR que el lloc de naixement no és gesn important per al pes del nadó.
+
+
+### 2.3 Predicció
+Segons el model de l’apartat 2.2 b), quina seria la probabilitat de baix pes en néixer, si la mare és fumadora i AD és de 90?
+
+
+```{r 2.3.1}
+
+model <- glm(formula= lower.BW ~ Sm + AD, data=df, family=binomial)
+newdata = data.frame(Sm = "S", AD = 90)
+predict(model, newdata, type="response")
+
+```
+
+
+
+### 2.4 Bondat de l’ajust
+Usa el test de Hosmer-Lemeshow per a veure la bondat d’ajust del model final triat. En el package ResourceSelection hi ha una funció que ajusta el test de Hosmer-Lemeshow.
+
+```{r 2.4.1}
+
+library(ResourceSelection)
+hl <- hoslem.test(df$lower.BW, fitted(model), g=10)
+hl
+cbind(hl$observed,hl$expected)
+
+```
+
+### 2.5 Corba ROC
+Dibuixar la corba ROC, i calcular l’àrea sota la corba. Discutir el resultat.
+
+```{r 2.5.1}
+library(pROC)
+test_prob = predict(model, newdata = df, type = "response")
+test_roc = roc(df$lower.BW ~ test_prob, plot = TRUE, print.auc = TRUE)
+
+```
+
+No sé si acabo d'entendre la curva ROC o si l'he feta bé. Jo crec que la varialbe de la mare fumadora, tal com he vist abans és molt forta, creix molt ràpidament.
+
+## 3 Conclusions de l’anàlisi
+
+En aquest apartat s’hauran d’exposar les conclusions sobre la base dels resultats obtinguts en tot l’estudi. Regressió lineal i logística
+
+Hem vist que la regressió lineal és prou útil per a predir variables numèriques amb un rang prou elevat.
+En canvi per a regressions logistiques, són necessàries variables binàries, 0 o 1.
+
+He notat que quan intentava separar si la mare era o no fumadora i intentar-la predir amb una regressió lineal, no serveix, en canvi amb la logistica si que funcionava.
+
+També hem entrat més a fons la relació entre variables com el baix pes d'un nadó i si la mare és fumadora. Obtenim conclusions més acurades que la PAC anterior. Si la mare és fumadora, hi ha més probabilitats de que el fill neixi amb baix pes. En canvi, com el lloc de naixement, no hi influeix gens.
+
+
+
+
+

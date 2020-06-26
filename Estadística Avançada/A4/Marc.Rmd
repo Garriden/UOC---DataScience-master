@@ -1,0 +1,592 @@
+---
+title: "A4"
+author: "Marc Garrido Casas"
+date: "17/6/2020"
+output: html_document
+---
+
+# 1 Introducció
+
+Les dades que es faran servir per aquesta activitat correspon a les vendes de seients de cotxes infantils a 400 botigues diferents. Les variables són:
+
+• Sales (Vendes unitàries, en milers, a cada ubicació)
+• CompPrice (Preu cobrat pel competidor a cada ubicació)
+• Income (Nivell d’ingressos comunitaris, en milers de dòlars)
+• Advertising (Pressupost de publicitat local de l’empresa a cada ubicació, en milers de dòlars)
+• Population (Mida de la població a la regió, en milers)
+• Price (Preu per seients de cotxes a cada lloc)
+• ShelveLoc (Un factor amb nivells Bad, Good i Medium que indica la qualitat de la ubicació dels prestatges dels seients del cotxe de cada lloc)
+• Age (Edat mitjana de la població local)
+• Education (Nivell educatiu a cada lloc)
+• Urban (Un factor amb els nivells Yes i No per indicar si la botiga es troba en una ubicació urbana o rural)
+• US (Un factor amb els nivells Yes i No per indicar si la botiga es troba als EUA o no)
+
+Les dades de l’estudi estàn a l’arxiu ChildCarSeats1.csv
+Nota: important a tenir en compte per a lliurar l’activitat:
+Cal lliurar el fitxer Rmd i el fitxer de sortida (PDF o html). El fitxer de sortida ha d’incloure: el codi i elresultat de l’execució de la mateixa (pas a pas). S’ha de respectar la mateixa numeració dels apartats que l’enunciat.
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load}
+setwd("C:/Users/garridom/Documents/UOC/Estadistica/A4")
+df <- read.csv("ChildCarSeats1.csv")
+head(df)
+```
+
+
+# 2 Estadística descriptiva i visualització
+
+## 2.1 Tipus de dades
+
+Comproveu el tipus de variable que correspon a cada una de les variables. Quines són tipus numèric? Quines són tipus factor? Hi ha dades faltants?
+
+```{r 2.1.1 dades}
+sapply(df, class)
+```
+
+Variables qualitatives (factor): ShelveLoc, Urban, US.
+Variables quantitatives (numèriques): Sales, CompPrice, Income, Advertising, Population, Price, Age, Education.
+
+```{r 2.1.1}
+id.factor <- c(7,10,11)
+id.num <- c(1,2,3,4,5,6,8,9)
+var.factor <- colnames(dt)[id.factor]
+var.num <- colnames(dt)[id.num]
+dfNum = df[c(1,2,3,4,5,6,8,9)]
+```
+
+```{r 2.1.2}
+sum(is.na(df))
+```
+
+No hi ha valor nul·ls.
+
+## 2.2 Resum de dades quantitatives
+
+Realitzeu una taula de les dades quantitatives on apareixi la mitja, la mitjana, la desviació standard i l’amplitud interquartílica (IQR, en anglès). Comenteu els resultats.
+
+```{r 2.2}
+summary(dfNum)
+```
+
+```{r 2.2.2}
+IQR(dfNum$Sales)
+IQR(dfNum$CompPrice)
+IQR(dfNum$Income)
+IQR(dfNum$Advertising)
+IQR(dfNum$Population)
+IQR(dfNum$Price)
+IQR(dfNum$Age)
+IQR(dfNum$Education)
+```
+
+## 2.3 Diagrama de caixa
+
+Mostreu amb diversos diagrames de caixa la distribució de la variable Sales segons: ShelveLoc, Urban i US. Interpretar els gràfics breument.
+
+```{r 2.3.1}
+boxplot(df$Sales ~ df$ShelveLoc)
+```
+
+El boxplot indica que els seients respecte la qualitat de prestatges, com més bona és questa qualitat, més se'n venen. Quan menys qualitat tenen, menys es venen. Vecu un outlier de poques ventes quan la qualitat és mitja.
+
+
+
+```{r 2.3.2}
+boxplot(df$Sales ~ df$Urban)
+```
+
+S'indica la quantita de vendes depenent si la tenda es troba en un entorn unrbà o rural.
+
+Veiem que són pràcticament calcats, excepte dos outliers on venen molt en zones urbanes, pot ser que siguin dues tendes just al mig d'una zona comercial molt important.
+
+```{r 2.3.3}
+boxplot(df$Sales ~ df$US)
+```
+
+La quantita de vendes si la tenda és troba als Estats Units o no. Veiem que clarament venen més si aquesta és situada als Estats Units.
+
+
+## 2.4 Representació gràfica de les variables qualitatives.
+
+Representeu gràficament les variables qualitatives.
+
+```{r 2.4.1}
+hist(df$Sales, 
+     main="Sales", 
+     xlab="quantity", 
+     col="chocolate",
+     breaks=seq(min(df$Sales)-0.5, max(df$Sales)+0.5))
+```
+
+
+```{r 2.4.2}
+hist(df$CompPrice, 
+     main="CompPrice", 
+     xlab="price", 
+     col="chocolate",
+     breaks=seq(min(df$CompPrice)-0.5, max(df$CompPrice)+0.5))
+```
+
+
+
+
+```{r 2.4.3}
+hist(df$Income, 
+     main="Income", 
+     xlab="mDollars", 
+     col="chocolate",
+     breaks=seq(min(df$Income)-0.5, max(df$Income)+0.5))
+```
+
+```{r 2.4.4}
+hist(df$Advertising, 
+     main="Advertising", 
+     xlab="mDollars", 
+     col="chocolate",
+     breaks=seq(min(df$Advertising)-0.5, max(df$Advertising)+0.5))
+```
+
+
+```{r 2.4.5}
+hist(df$Population, 
+     main="Population", 
+     xlab="m population", 
+     col="chocolate",
+     breaks=seq(min(df$Population)-0.5, max(df$Population)+0.5))
+```
+
+```{r 2.4.6}
+hist(df$Price, 
+     main="Price", 
+     xlab="Dollars", 
+     col="chocolate",
+     breaks=seq(min(df$Price)-0.5, max(df$Price)+0.5))
+```
+
+```{r 2.4.7}
+hist(df$Age, 
+     main="Age", 
+     xlab="Age", 
+     col="chocolate",
+     breaks=seq(min(df$Age)-0.5, max(df$Age)+0.5))
+```
+
+```{r 2.4.8}
+hist(df$Education, 
+     main="Education", 
+     xlab="Education", 
+     col="chocolate",
+     breaks=seq(min(df$Education)-0.5, max(df$Education)+0.5))
+```
+
+
+# 3 Estadística inferencial
+
+## 3.1 Interval de confiança de la variable Price
+
+Calculeu l’interval de confiança al 95% de la variable Price. A partir del valor obtingut, expliqueu com s’interpreta el resultat de l’interval de confiança. 
+Nota: S’han de realitzar els càlculs manualment. No es poden fer servir funcions de R que calculin directament l’interval de confiança com t.test o similar. Si que podeu fer servir funcions com qnorm, pnorm, qt i pt
+
+```{r 3.1.1}
+
+IC <- function( x, alfa=0.05 ){
+  #Error típico
+  n <- length(x)
+  errorTipico <- sd(x) / sqrt( n )
+  errorTipico
+  t<-qnorm( 1-alfa/2 )
+  t
+  error<- t * errorTipico
+  error
+  return ( c( mean(x) - error, mean(x) + error ))
+}
+
+my.ic <- IC( df$Sales, alfa=0.05 )
+
+#Comprovació
+t.test(df$Sales)
+
+```
+
+L’interval de confiança del 95% de la variable "Sales" és (7.141372, 7.678578). El significat d’aquest interval és el següent: si es prenen diferents mostres de la població, el 95% dels intervals calculats contenen el valor del paràmetre "Sales".
+
+
+## 3.2 Test de comparació de dues mitjanes
+Es pot acceptar que en les botigues d’EUA (variable US) la mitjana de vendes del seients de cotxes infantils (variable Sales) és superior a la mitjana de vendes en botigues fora d’EUA? Calculeu per a un nivell de confiança del 95%.
+Nota: S’han de realitzar els càlculs manualment. No es poden fer servir funcions de R que calculin directament l’interval de confiança com t.test o similar. Si que podeu fer servir funcions com qnorm, pnorm, qt i pt S’assumirà que la variable Sales té distribució normal.
+Seguiu els passos que es detallen a continuació:
+
+### 3.2.1 Escriure la hipòtesi nul·la i alternativa
+
+H0 : μ > μ0
+H1 : μ <= μ0
+
+μ = Sales US
+μ0 = Sales !US
+
+### 3.2.2 Justificar quin mètode aplicareu
+
+Mètode bilateral, jaque és un contrast és sobre la mitjana. També es podrà assumir normalitat.
+
+
+### 3.2.3 Realitzar els càlculs de l’estadístic de contrast, valor crític i p valor amb un nivell de confiança del 95% Per comprovar-ho podeu usar la funció R.
+
+```{r 3.2.3}
+myttest <- function( x1, x2, CL=0.95,equalvar=TRUE, alternative="bilateral" ){ #z test
+mean1<-mean(x1)
+n1<-length(x1)
+sd1<-sd(x1)
+mean2<-mean(x2)
+
+n2<-length(x2)
+sd2<-sd(x2)
+if (equalvar==TRUE){
+  s <-sqrt( ((n1-1)*sd1^2 + (n2-1)*sd2^2 )/(n1+n2-2) )
+  Sb <- s*sqrt(1/n1 + 1/n2)
+  df<-n1+n2-2
+}
+else{ #equalvar==FALSE
+  Sb <- sqrt( sd1^2/n1 + sd2^2/n2 )
+  denom <- ( (sd1^2/n1)^2/(n1-1) + (sd2^2/n2)^2/(n2-2))
+  df <- ((sd1^2/n1 + sd2^2/n2)^2) / denom
+}
+alfa <- (1-CL)
+t<- (mean1-mean2) / Sb
+if (alternative=="bilateral"){
+  tcritical <- qnorm( alfa/2, lower.tail=FALSE ) #two sided
+  pvalue<-pnorm( abs(t), lower.tail=FALSE )*2 #two sided
+}
+else if (alternative=="less"){
+  tcritical <- qnorm( alfa, df, lower.tail=TRUE )
+  pvalue<-pnorm( t, df, lower.tail=TRUE )
+}
+else{ #(alternative=="greater")
+  tcritical <- qnorm( alfa, lower.tail=FALSE )
+  pvalue<-pnorm( t, lower.tail=FALSE )
+}
+
+#Guardem en resultat en un data frame
+info<-data.frame(t,tcritical,pvalue)
+info %>% kable() %>% kable_styling()
+return (info)
+}
+
+library(magrittr) # needs to be run every time you start R and want to use %>%
+#library(dplyr) 
+library(kableExtra)
+
+info<-myttest( df$Sales[df$US=="Yes"], df$Sales[df$US=="No"], alternative="bilateral" )
+info
+
+```
+
+```{r 3.2.3.1}
+#Comprovació
+t.test( df$Sales[df$US=="Yes"], df$Sales[df$US=="No"], alternative="two.sided")
+```
+
+
+## 3.3 Contrast no paramètric
+En l’apartat anterior hem assumit la normalitat de la variable vendes (Sales). Ara apliqueu un test no paramètric per respondre la mateixa pregunta anterior. Podeu usar una funció R per resoldre el contrast.
+
+```{r 3.3}
+info<-myttest( df$Sales[df$US=="Yes"], df$Sales[df$US=="No"], alternative="less" )
+info
+```
+
+### 3.3.1 Interpreteu el resultat
+
+el valor crític per a alpha=0.05 és 1.956 i el valor observat és 4.6. 
+La regió d’acceptació de H0 és (-1.959964, 1.959964). Per tant, el valor observat es troba fora de l'interval.
+
+Es rebutja la hipòtesi nul·la, per tant, les vendes dins d'Estats Units, no són prou majors en vers a les vandes de fora del país.
+
+
+
+
+# 4 Regressió
+
+
+##4.1 Model de regressió
+
+Apliqueu un model de regressió lineal múltiple que tingui com a variables explicatives: Price, Advertising, Age, Population, ShelveLoc, US, i Urban, i com a variable dependent les vendes, variable Sales. Especifiqueu el nivell base (usant la funció relevel): per a la variable ShelveLoc, la categoria “Bad”, per a la variable US, la categoria “Yes”, i per a la variable Urban, la categoria “Yes”.
+
+```{r 4.1}
+df$ShelveLocAux <- relevel(df$ShelveLoc, ref = "Bad")
+df$USAux <- relevel(df$US, ref = "Yes")
+df$UrbanAux <- relevel(df$Urban, ref = "Yes")
+
+lineal <- lm(formula = Sales ~ ShelveLocAux + USAux + UrbanAux + Price + Advertising + Age + Population, data = df)
+
+summary(lineal)
+```
+
+## 4.2 Interpretar el model
+
+Interpreteu el model ajustat. Expliqueu quina interpretació en feu de la contribució en el model de les variables regressores. Indiqueu com seria el model de regressió per una botiga fora d’EUA, no urbana i amb un ShelveLoc de tipus “Bad”.
+
+EL coeficient de determinació ajustat és 0.6477, l’ajust és més bo que dolent.
+
+Les variables de Vendes fora d'US, fora de centres urbans i population, no són significatives ja que la p-value és més baixa que 0.05.
+
+Pel que sembla, la variable ShelveLoc és important respecte les Sales, així com també lleugerament, la variable Advertising. Les altres, o resten, o no són prou significatives.
+
+
+
+Qualsevol model amb una botiga fora d’EUA, no urbana, no tindria masses bons resultats ja que hem vist que aquestes variables no són significatives.
+
+
+## 4.3 Predicció
+
+Apliqueu el model de regressió per predir Sales d’una botiga fora d’EUA a una zona rural, amb Price de 131 dòlars, Advertising de 0 dòlars, Population de 139 milers de persones, Age de 40 anys i ShelveLoc de tipus ¨Bad¨.
+
+Compareu el resultat amb el d’una botiga fora d’EUA a una zona rural, amb Price de 131 dòlars, Advertising de 9 mil de dòlars, Population de 139 milers de persones, Age de 40 anys i ShelveLoc de tipus ¨Good¨. Expliqueu les diferències en funció dels coeficients del model de regressió.
+
+```{r 4.3 pred}
+lineal <- lm(formula = Sales ~ US + Urban + Price + Advertising + Population + Age + ShelveLoc, data = df)
+newData = data.frame(US = "No", Urban = "Yes", Price = 131, Advertising = 0, Population = 139, Age = 40, ShelveLoc = "Good")
+predict(lineal, newData, type="response")
+```
+
+La predicció és de 8.75 milers de vendes.
+
+
+```{r 4.3.1}
+lineal <- lm(formula = Sales ~ US + Urban + Price + Advertising + Population + Age + ShelveLoc, data = df)
+newData = data.frame(US = "No", Urban = "Yes", Price = 131, Advertising = 9, Population = 139, Age = 40, ShelveLoc = "Good")
+predict(lineal, newData, type="response")
+```
+
+Ha pujat de 8.75 a 9.78 milers de vendes
+
+Exactament com he dit abans, amb els coeficients de correlació s'ha vist que la variable "Advertising" és prou significativa pel model.
+
+
+# 5 Anàlisi de la variància (ANOVA)
+
+## 5.1 Anova d’un factor
+
+### 5.1.1 Vendes i qualitat de la localització dintre de l’expositor
+Realitzeu un ANOVA per contrastar la significació de la variable ShelveLoc en la variable Sales.
+
+### 5.1.1.1 Escriure la hipòtesis nul·la i alternativa
+
+Hipòtesis nula: u1 = u2
+Hipòtesis alternativa: u1 != u2
+
+
+### 5.1.1.2 Model Calculeu l’anàlisi de variància, utilitzant la funció aov o lm. Interpreteu el resultat de l’anàlisi, tenint en compte els valors Sum Sq, Mean SQ, F i Pr (> F).
+
+```{r 5.1.1.2}
+lineal <- aov(df$Sales ~ df$ShelveLoc, data = df)
+anova(lineal)
+```
+
+La p-value és més baixa que 0.05, això vol dir que te significació.
+
+### 5.1.1.3 Càlculs
+
+a) Mostreu gràficament la distribució de vendes, Sales, segons el factor ShelveLoc ordenat segons la qualitat: “Bad”, “Medium” i “Good”. Pots fer servir la funció reorder.
+
+```{r 5 a sales}
+boxplot(df$Sales ~ df$ShelveLoc)
+```
+
+
+b) Per tal d’aprofundir en la comprensió del model ANOVA, calculeu manualment la suma de quadrats intra i la suma de quadrats entre grups. Els resultats han de coincidir amb el resultat del model ANOVA. Com a referència, pots obtenir les fórmules de López-Roldán i Fachelli (2015), pàgines 29-33.
+
+```{r LopezRoldan}
+
+SCT <- function(df, factor_){
+  wages <- split(df$Sales, factor_)
+  m <- c(); l <- c();  v <- c()
+  for (i in wages){
+    l <- c(l,length(i))
+    m <- c(m,mean(i))
+    v <- c(v,var(i))
+  }
+  d_ = 0;  n_ = 0
+  for (i in 1:length(l)){
+    n_ = n_ + m[i] * l[i]
+    d_ = d_ + l[i]
+  }
+  mean_global = n_ / d_
+  scd = 0
+  for (i in 1:length(l)){
+    scd = scd + ((l[i]-1) * v[i])
+  }
+  writeLines(paste("SCD =",round(scd,0)))
+  sce = 0
+  for (i in 1:length(l)){
+    sce = sce + (l[i] * (m[i]-mean_global)^2)
+  }
+  writeLines(paste("SCE =",round(sce,0)))
+}
+
+
+SCT(df, df$ShelveLoc)
+```
+
+
+c) També proporcioneu l’estimació dels efectes dels nivells del factor ShelveLoc. I l’estimació de la variància de l’error. Comprovació amb la funció lm() o aov().
+
+```{r c estima}
+summary.lm(lineal)
+```
+
+### 5.1.2 Interpreteu els resultats
+
+La p-value és molt baixa, i menor que 0.05, per tant hem de rebujtar la hipòtesis nul·la. No hi ha relació entre vendes i qualitat de localització.
+
+
+## 5.2 Adequació del model
+
+Mostra visualment l’adequació del model ANOVA. Podeu fer servir plot sobre el model ANOVA resultant.En els apartats següents es demana la interpretació d’aquests gràfics.
+
+### 5.2.1 Normalitat dels residus
+Interpreteu la normalitat dels residus a partir de l’gràfic Normal Q-Q que es mostra en l’apartat anterior.
+
+``` {r 5.2.1 normalitat}
+residu <- residuals(lineal)
+shapiro.test(x = residu)
+```
+
+El p-valor és més gran que 0.05. Existeix normalitat.
+
+### 5.2.2 Homocedasticitat dels residus
+Els gràfics “Residuals vs Fitted”, “Scale-Location” i “Residuals vs Factor levels” donen informació sobre la homocedasticitat dels residus. Interpreteu aquests gràfics.
+
+``` {r 5.2.2 Homoceda}
+plot(lineal,1)
+```
+
+
+## 5.3 ANOVA no paramètric
+
+Si la validació de les premisses de normalitat i homocedasticitat no es verifiquen es pot aplicar un test no paramètric, per exemple el test de Kruskal-Wallis. Apliqueu un test de Kruskal-Wallis per contrastar si hi ha diferències entre les botigues segon on s’exposa (ShelveLoc) pel que fa a les vendes (Sales) només a les observacions amb Advertising major que el valor de la mediana.
+
+``` {r 5.3}
+mediana = median(df$Advertising)
+mediana
+dfAdv = df[df$Advertising > mediana,]
+```
+
+``` {r kruskal}
+race.kruskal <- kruskal.test(Sales ~ ShelveLoc, data = dfAdv)
+race.kruskal
+```
+
+
+
+### 5.3.1 Interpreteu els resultats
+
+La p-value és clarament inferior al 0.05, per tant, hi ha diferències entreles botigues on s'exposa pel que fa a les vendes amb un Advertising inferior a 5.
+
+
+# 6 ANOVA multifactorial
+A continuació, es vol avaluar l’efecte de més d’un factor sobre la variable Sales on el primer factor sempre serà ShelveLoc. Primer es realitzarà l’anàlisi on el segon factor és US i després, l’anàlisi on el segon factor és Urban.
+
+## 6.1 Factors: ShelveLoc i US
+
+### 6.1.1 Anàlisis visual dels efectes principals i possibles interaccions
+Dibuixeu en un gràfic la variable Sales en funció de ShelveLoc i en funció de US. El gràfic ha de permetre avaluar si hi ha interacció entre els dos factors. Per això, es recomana seguir els passos:
+
+1. Agrupeu el conjunt de dades per ShelveLoc i per US. Calcular la mitjana de vendes per a cada grup. Per realitzar aquest procés, es pot fer amb les funcions group_by i summarise de la llibreria dplyr.
+
+``` {r 611 a}
+
+df1 = df[c("Sales","ShelveLoc","US")]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#update.packages ()
+library(dplyr)
+##grouped <- df1 %>% 
+##    group_by(ShelveLoc, US) %>% 
+#    summarise_at(vars(Sales), funs(mean(., na.rm=TRUE)))
+#library(data.table)
+#setattr(grouped$ShelveLoc,"levels",c("Bad", "Good", "Normal"))
+```
+
+
+2. Mostreu el conjunt de dades en forma de taula, on es mostri la mitjana de cada grup segons ShelveLoc i US.
+
+``` {r 611 b}
+#library(expss)
+#grouped %>% 
+#  tab_cells(round(Sales,1)) %>% 
+#  tab_cols(ShelveLoc, US) %>% 
+#  tab_stat_cpct() %>% 
+#  tab_pivot()
+```
+
+3. Mostreu en un gràfic el valor mitjà de la variable Sales per a cada factor. Pots inspirar-te en els gràfics de López-Roldán i Fachelli (2015), p.38. Pots realitzar aquest tipus de gràfic usant la funció ggplot de la llibreria ggplot2.
+
+
+4. Interpreteu el resultat sobre si només hi ha efectes principals o hi ha interacció entre els factors. Si hi ha interacció, explicar com s’observa aquesta interacció en el gràfic.
+
+No crec que m'hagi sortit bé el plot.
+
+### 6.1.2 Adequació del model
+Interpreteu l’adequació del model ANOVA obtingut usant els gràfics de residus.
+
+## 6.2 Factors: ShelveLoc i Urban
+
+### 6.2.1 Anàlisis visual dels efectes principals i possibles interaccions
+
+Dibuixeu en un gràfic la variable Sales en funció de ShelveLoc i en funció de Urban. El gràfic ha de permetre avaluar si hi ha interacció entre els dos factors. Per això, es recomana seguir els passos:
+1. Agrupeu el conjunt de dades per ShelveLoc i per Urban. Calcular la mitjana de vendes per a cada grup. Per realitzar aquest procés, es pot fer amb les funcions group_by i summarise de la llibreria dplyr.
+2. Mostreu el conjunt de dades en forma de taula, on es mostri la mitjana de cada grup segons ShelveLoc i Urban.
+3. Mostreu en un gràfic el valor mitjà de la variable Sales per a cada factor. Pots inspirar-te en els gràfics de López-Roldán i Fachelli (2015), p.38. Pots realitzar aquest tipus de gràfic usant la funció ggplot de la llibreria ggplot2.
+4. Interpreteu el resultat sobre si només hi ha efectes principals o hi ha interacció entre els factors. Si hi ha interacció, explicar com s’observa aquesta interacció en el gràfic.
+
+
+
+# 7 Comparacions múltiples
+
+Prenent com a referència el model ANOVA multifactorial, amb els factors ShelveLoc i US, aplicar el test de comparació múltiple Scheffé. Interpreteu el resultat del test i indicar quins grups són diferents significativament entre si.
+
+``` {r 71}
+#mod = aov(Sales ~ ShelveLoc * US, data=grouped)
+#library(sf)
+#library(later)
+#install.packages("labelled")
+#.libPaths()
+#update.packages ()
+##library(labelled)
+##library(agricolae)
+#scheffe.test(mod, "ShelveLoc")
+```
+
+
+# 8 Conclusions
+
+M'ha agradat prou l'assignatura, he aprofundit prou en temes d'estadística que mai n'hagués aprés pel meu compte.
+
+He anat aprenent en cada pràctica per a que finalment, en aquesta última, les hem agrupat totes.
+
+Per a un dataset en concret, hem vist les variables que són més importants, les que més es relacionen entre elles.
+
+L'índex de correlació entre dues variables, realitzar hipòtesis i aceptar-les o desmentirles, prediccions...
+
+
+

@@ -1,0 +1,609 @@
+---
+title: "A2"
+author: "Marc Garrido Casas"
+date: "23/4/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### L’anàlisi es desenvoluparà sobre la base de les preguntes de recerca següents:
+1. Interval de confiança al 95% del pes en néixer
+2. ¿El pes mitjà en néixer difereix significativament de 3.5kg?
+3. ¿El pes en néixer de les nenes és diferent al dels nens?
+4. ¿La proporció de naixements de nens és inferior als naixements de nenes?
+5. ¿Existeix una relació entre baix pes en néixer i el fet que la mare sigui fumadora?
+
+
+
+### 1 Anàlisi descriptiva
+#### 1.1 Lectura del fitxer
+Llegir el fitxer BWprocessed.csv. Validar que els tipus de dades llegides són correctes. Si no és així, realitzar les conversions oportunes.
+
+
+```{r 1.1.1}
+setwd("C:/Users/garridom/Documents/UOC/Estadistica/A2")
+df <- read.csv("BWprocessed.csv", header = TRUE, sep = ',', row.names=1)
+head(df)
+```
+
+```{r 1.1.2}
+summary(df)
+```
+
+Vec que les ciutats ara són correctes, la hora també.
+El dia diria que està bé, tot i que el pdf diu que hauria de ser un valor entre 1 i 7, en la practica anterior precissament el varem passar a string tal com el veiem ara.
+Les altres variables semblen correctes.
+
+
+
+#### 1.2 Anàlisi descriptiva visual
+Representar de manera visual les variables del conjunt de dades i les distribucions dels seus valors. Trieu la representació més apropiada en cada cas.
+
+#### Hospitals, ciutats i dies de la setmana:
+```{r 1.2.1}
+table(df$HP)
+table(df$City)
+table(df$Day)
+```
+
+#### Hora:
+```{r 1.2.2}
+head(df$Time)
+```
+
+
+#### Sexe:
+```{r 1.2.3}
+table(df$Sex)
+```
+
+#### Pes i diàmetres:
+```{r 1.2.4}
+par(mfrow=c(1,3))
+boxplot( df$BW, main="BW" )
+boxplot( df$BPD, main="BPD" )
+boxplot( df$AD, main="AD" )
+```
+
+#### Setmanes de gestació:
+```{r 1.2.5}
+boxplot( df$Ge, main="Ge" )
+```
+
+
+```{r 1.2.6}
+table(df$Sm)
+```
+
+#### 1.3 Correlació
+Estudiar visualment les possibles correlacions entre:
+
+ - Les variables pes en néixer i el diàmetre biparietal
+ 
+```{r 1.3.1}
+#install.packages("ggpubr")
+library("ggpubr")
+ggscatter(df, x = "BW", y = "BPD", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "Pes al naixement", ylab = "Diàmetre biparietal")
+```
+```{r 1.3.1.2}
+cor(df$BW, df$BPD)
+```
+
+S'aprecia que hi ha algún tipus de corelació entre el pes al nèixer i el diàmetre biparietal (0.77). Excepte quan el diàmetre baixa dels 80mm, on el pes baixa dràsticament en relació a aquest diàmetre.
+
+
+ - Les variables pes i diàmetre abdominal
+ 
+```{r 1.3.2}
+#install.packages("ggpubr")
+library("ggpubr")
+ggscatter(df, x = "BW", y = "AD", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "Pes al naixement", ylab = "Diàmetre abdominal")
+```
+ 
+El pes es correlaciona millor amb el diàmetre abdominal que el biparietal, pasa d'una rho del 0.77 al 0.88. Els valors quan el diàmetre és més baix de 80mm no són tan dràstics.
+
+ 
+ 
+ 
+ - Les variables pes i setmanes de gestació.
+ 
+ 
+```{r 1.3.3}
+#install.packages("ggpubr")
+library("ggpubr")
+ggscatter(df, x = "BW", y = "Ge", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "Pes al naixement", ylab = "Setmanes de gestació")
+```
+
+
+El pes en correlació a les setmanes de gestació és encara millor, pasa a tenir una rho del 0.91. Tot i que el valor de les setmanes són enters, podem apreciar una línea. Si tinguessim el dia exacte de gestació seria inclús més correlatiu.
+
+
+### 2 Pes mitjà en néixer
+#### 2.1 Interval de confiança
+Es desitja investigar l’interval de confiança del 95% del pes mitjà en néixer a partir de la mostra de dades.
+S’aconsella definir una funció IC que calculi l’interval de confiança d’una variable donada. Aquesta funció es podrà aprofitar més endavant.
+Seguiu els passos que s’especifiquen a continuació.
+
+#### 2.1.1 Càlculs
+Nota: heu de realitzar els càlculs manualment. No es poden usar funcions com a t.test o similars que ja calculin directament l’interval de confiança. En canvi, sí podeu fer servir funcions com qnorm, pnorm, qt, pt per conèixer els valors de la distribució normal o t-Student.
+
+```{r 2.1.1.1}
+IC<-function(len, mean, sd)
+{
+  error = qt(0.975,df=len-1)*sd/sqrt(len)
+  return (error)
+}
+```
+
+Això ens returna un error del 2.25%, però com volem dos límits, un superior i un inferior, aixì farà un error total del 5% per tal de tenir un interval de confiança del 95%.
+
+
+```{r 2.1.1.2}
+length = length(df$BW)
+mean = mean(df$BW)
+sd = sd(df$BW)
+
+error <- IC(length, mean, sd)
+
+mean
+error
+mean - error
+mean + error
+```
+
+És a dir, la mitjana del pes d'un nadó al nèixer, és de 2660.792 grams. Si agafem el 95% de confiança, el límit inferior és a 2574.245 grams, i el superior a 2747.245.
+
+
+#### 2.1.2 Interpretació
+Interpreteu el resultat obtingut i el significat d’interval de confiança.
+
+Els resultats indiquen que, teoricament, si es tornen a mesurar els pes dels nadons al acabar de nèixer, la mitjana que obtindrem, 95 de cada 100 cops, seran dins d'aquest interval.
+És a dir, amb una altre població de 300 nadons recén nascuts, hauriem d'obtenir una mitjana de 2660+-86 grams.
+
+
+#### 2.2 Contrast del valor mitjà amb 3.5kg
+
+Independentment del resultat de l’apartat anterior, passem a desenvolupar el procediment per donar resposta a la pregunta següent:
+¿El pes mitjà en néixer dels nens i nenes nascuts a Espanya és de 3.5kg?
+Responeu a la pregunta amb un 95% de nivell de confiança. Seguiu els passos que s’indiquen a continuació.
+Nota: S’ha de calcular a partir de tota la mostra. No es demana el càlcul per separat de nens i nenes, sinó
+de totes les dades en global.
+
+### 2.2.1 Escriviu la hipòtesi nul·la i alternativa.
+
+L'Hipòtesi nul·la és que el pes mitjà dels nens nascuts a España és de 3500 grams.
+L'Hipòtesi alternativa és el contrari, que el pes mitjà dels nens nascuts a España no és 3500 grams.
+Amb un 95% de confiança.
+
+H0: = 3500 
+
+H1: != 3500
+
+L'hipòtesi alternativa serà una hipòtesi bilateral, és a dir el pes no segueixen la mitjana establerta. Pot ser més gran o més baixa.
+
+#### 2.2.2 Mètode
+Detalleu quin mètode usareu per respondre aquesta pregunta.
+
+1) Fixar les hipòtesis nul·la i alternativa.
+2) Fixar un nivell de significació.
+3) Determinar l’estadístic de contrast i la seva llei.
+4) Comprarar el valor z amb el valor crític.
+5) Determinar el valor de p-value i comparar-lo amb el nivell de significació.
+
+El nivell de significació serà del 0.05 ja que volem obtenir un interval de confiança del 95%.
+
+Per als contrastos bilaterals, podem fer un contrast d’hipòtesi utilitzant intervals de confiança.
+Segueix una distribució normal estàndard. Amb la llei  N(0,1).
+
+
+#### 2.2.3 Càlculs
+Desenvolupeu tots els càlculs. No es poden usar funcions com a t.test o similars que ja calculin directament l’interval de confiança. En canvi, sí podeu fer servir funcions com qnorm, pnorm, qt, pt per conèixer els valors de la distribució normal o t-Student.
+
+```{r 2.2.3.1}
+Z = (3500-mean)/(sd/sqrt(length))
+Z
+
+cuantil = qnorm(1 - 0.05/2)
+cuantil
+
+pValue =2*pnorm(-abs(Z))
+pValue
+
+```
+
+Càlcul d'intervals de confiança.
+
+```{r 2.2.3.2}
+
+# Al seguir una distrubució normal, amb la llei  N(0,1) i un interval de confiança del 95%, la fòrmula serà la següent:
+error = 1.96*sd/sqrt(300)
+error
+
+intervalL = mean - error
+intervalH = mean + error
+intervalL
+intervalH
+```
+
+
+
+#### 2.2.4 Conclusió
+A partir dels valors obtinguts sobre el valor crític, el valor observat i el valor p, responeu la pregunta plantejada.
+
+Veiem que el valor de z és, en valor absolut, 19.1. Com que aquest valor és més gran que el valor crític 1.96, refusem l'hipòtesis nul·la i aceptem la hipòtesis alternativa.
+
+Si ens fixem en el valor de p-value, el valor és molt petit, aprop del zero. AL ser més petit que el nivell de significació de 0.05, refusem l'hipòtesis nul·la.
+
+El pes mitjà dels nens i nenes nascuts a España NO és de 3.5Kg.
+
+#### 2.2.5 Relació amb l’interval de confiança.
+A partir del resultat sobre l’interval de confiança obtingut en l’apartat anterior, com hauríeu pogut respondre a aquesta mateixa pregunta?
+
+
+Si el valor que volem contrastar està en l’interval de confiança acceptem la hipòtesi nul·la i, si no hi és, rebutgem la hipòtesi nul·la.
+
+El valor de l'hipòtesi nul·la que eren 3500 grams, no es troba dins l'interval (2574, 2757). Llavors podem afirmar amb un interval de confiança del 95% que l'hipòtesis no és correcta.
+
+Extrec la matèixa conclusió.
+
+
+
+### 3 Contrast de pes mitjà entre nens i nenes
+
+Es desitja investigar si el pes en néixer de les nenes és diferent al dels nens. Per això, heu de realitzar un contrast sobre la mitjana del pes, considerant dues mostres independents. Seguiu els passos que s’especifiquen a continuació.
+
+
+#### 3.1 Hipòtesi
+Escriviu la hipòtesi nul·la i la hipòtesi alternativa
+
+L'hipòtesi nul·la és que el pes de les nenes al nèixer és diferent als nens. L'hipòtesi alternativa és que el pes de les nenes al nèixer és igual als dels nens.
+
+H0: pes nens = pes nenes.
+
+H1: pes nens != pes nenes.
+
+
+#### 3.2 Assumpció de normalitat
+Justificar si es pot assumir normalitat en aquest cas.
+
+És una distribució normal estàndard ja que la variància és coneguda.
+
+
+#### 3.3 Mètode
+Explicar quin mètode usareu per al contrast a partir de l’anàlisi prèvia sobre l’assumpció de normalitat. 
+Indiqueu també si es tracta d’un contrast unilateral o bilateral.
+
+Primer, realitzar la fòrmula per a calcular el contrast sobre la mitjana amb sd coneguda.
+
+Un cop calculat el valor observat de l’estadístic de contrast, hem de determinar el p-valor. Amb contrast Bilateral.
+
+És un contrast bilateral ja que no es tracta de que l'hipòtesi alternativa sigui més gran o igual que l'hipòtesi nul·la, sinó que diferent a ella.
+
+
+#### 3.4 Càlculs
+Realitzeu tots els càlculs del contrast. No es pot usar funcions del tipus t.test. Heu de realitzar els càlculs manualment, seguint les fórmules que s’especifiquen en els materials. Sí que podeu usar funcions del tipus qnorm, pnorm, pt, qt, les quals codifiquen els valors de les distribucions de dades normals i t-Student.
+
+```{r 3.4.1}
+mean = mean(df$BW)
+mean
+
+# Pes dels nens:
+pesM = df$BW[df$Sex=='M']
+varM = var(pesM)
+lenM = length(pesM)
+meanM = mean(pesM)
+meanM
+
+# Pes de les nenes:
+pesF = df$BW[df$Sex=='F']
+varF = var(pesF)
+lenF = length(pesF)
+meanF = mean(pesF)
+meanF
+
+sM = sqrt(varM/lenM)
+sF = sqrt(varF/lenF)
+
+ptAux = (meanM - meanF)/sqrt(sM*sM + sF*sF)
+
+pval = 2*pt(-abs(ptAux), lenM+lenF-2)
+pval
+
+```
+
+#### 3.5 Interpreteu els resultats
+Sobre la base del valor p, valor observat i valor crític obtinguts en l’apartat anterior, donar resposta a la pregunta plantejada.
+
+Amb una p-value 0.37, major a 0.05 no podem refusar l'hipòtesis nul·la, la aceptarem, és a dir, no hi ha diferències significatives. El pes de nadons entre nens i nenes no són diferents.
+
+
+#### 3.6 Interval de confiança
+Una altra manera d’avaluar si existeixen diferències del pes mitjà entre nens i nenes és a partir dels respectius intervals de confiança. Calcular aquests intervals de confiança i extreure les conclusions i com aquestes corroboren els resultats del contrast realitzat.
+
+Ja hem vist que l'interval amb el 95% de confiança és (2574, 2757).
+Tant el pes dels nens, 2616.977 grams, com el pes de les nenes, 2695.218 grams. Els dos valors es troben dins d'aquest interval, així que sospito que no hi ha diferència entre els pesos dels nadons de diferens sexes. La mateixa conclusió que he extret en l'apartat anterior.
+
+
+
+### 4 Proporció de nens i nenes
+A continuació, es planteja la pregunta següent:
+¿La proporció de naixements de nens és inferior a la dels naixements de nenes?
+Per respondre a aquesta pregunta, seguiu els passos que s’especifiquen a continuació.
+
+
+#### 4.1 Hipòtesi
+Escriviu la hipòtesi nul·la i la hipòtesi alternativa.
+
+L'hipòtesi nul·la és que la proporcio de naixements de nens és inferior a la de les nenes. 
+L'hipòtesi alternativa és que la proporció de naixements de nens és igual o superior a la de les nenes.
+
+H0: proporció naixements nens < proporció naixements nenes
+
+H1: proporció naixements nens >= proporció naixements nenes
+
+
+
+#### 4.2 Mètode
+Especificar quin mètode usareu per aquest contrast. També indiqueu si el contrast és unilateral o bilateral.
+
+En aquest cas, la mitjana mostral correspon a la freqüència.
+Aplicaremn fòrmules en funció de la variància, que segueix una distribució de Bernoulli. La podrem aproximar a una distribució estàndard normal.
+
+Tenint una variància coneguda, obtenim el valor p i comparant-lo amb l'interval de confiança n'extraurem conclusions. 
+
+Aceptarem l'hipòtesis nul·la si el valor del contrast és inferior a lvalor crític.
+
+És un contrast bilateral ja que per veure si l'hipòtesis nul·la és correcte, només haurem d'observar un costat de la distribució normal.
+
+
+#### 4.3 Càlculs
+Realitzeu tots els càlculs manualment. Igual que en els apartats anteriors, només podeu usar les funcions qnorm, pnorm, qt, pt.
+
+```{r 4.3}
+
+nens = df$Sex[df$Sex=='M']
+nenes = df$Sex[df$Sex=='F']
+
+len = length(df$Sex)
+lenNens = length(nens)
+lenNens
+lenNenes = length(nenes)
+lenNenes
+
+perNens = lenNens / len
+perNens
+
+perNenes = lenNenes / len
+perNenes
+
+errSd = sqrt(perNenes*(1-perNenes)/len)
+errSd
+
+p = lenNens/len
+p
+
+contrast = (p - perNenes)/errSd
+contrast
+
+pval = pt(1-abs(contrast), len-2)
+pval
+
+```
+
+
+
+#### 4.4 Interpretació
+A partir del resultat de l’estadístic de contrast observat, el valor crític i el valor p, concloeu sobre si es pot afirmar que la proporció de nens que neixen és inferior a la de les nenes.
+
+El valor del contrast, és -4.19, inferior a 1.96. Aceptem l'hipòtesis nul·la ja que el valor del contrast NO és superior al valor crític. 
+
+Per tant, la proporció de nens nascuts és inferior a la de les nenes.
+
+Com que el valor de p-value és molt proper a zero i clarament inferior a 0.05, extreiem la mateix a conclusió.
+
+
+
+### 5 Relació entre baix pes i mare fumadora
+A continuació, se’ns planteja la següent pregunta:
+¿Existeix relació entre baix pes en néixer i el fet que la mare sigui fumadora?
+Per investigar la relació entre baix pes en néixer i ser fill de mare fumadora, es realitzen les anàlisis següents.
+
+
+### 5.1 Anàlisi sobre els casos de baix pes
+En primer lloc, s’etiqueten els casos de baix pes en néixer com aquells que són inferiors a 2.5kg. Es construeix una taula de contingència on s’avalua la relació entre baix pes en néixer i ser fill de mare fumadora. Una vegada construïda la taula, s’ha d’aplicar el test d’independència de dues variables Chi quadrat (test ChiSquare).
+Realitzeu tots els càlculs d’aquest test i després, interpreteu si podem observar una relació entre baix pes i ser fill de mare fumadora amb un nivell de confiança del 95%.
+Nota: per calcular el test d’independència de dues variables, no podeu usar la funció chisq.test per resoldre l’exercici. Heu de realitzar els càlculs manualment. Només podeu usar chisq.test per validar els vostres resultats. Per accedir als valors de la funció de distribució Chi Quadrat, podeu usar les funcions dchisq, pchisq, qchisq de la llibreria stats.
+Podeu consultar el test d’independència de dues variables ChiSquare en textos d’estadística. Adjuntem alguns enllaços que poden ser útils:
+• https://stattrek.com/chi-square-test/independence.aspx
+• https://www.spss-tutorials.com/chi-square-independence-test/
+Seguiu els passos que s’especifiquen a continuació.
+
+
+#### 5.1.1 Hipòtesi
+Escriviu la hipòtesi nul·la i alternativa.
+
+L'hipòtesi nul·la és que hi ha relació entre el baix pes d'un nado recen nascut i que la mare sigui fumadora.
+L'hipòtesi alternativa és que NO hi ha relació entre el baix pes d'un nado recen nascut i que la mare sigui fumadora.
+
+H0: baix pes i mare fumadora són dependents
+
+H1: baix pes i mare fumadora són independents
+
+
+#### 5.1.2 Càlculs
+Realitzeu els càlculs manualment del test. Per això, es recomana construir una funció my.chisq que realitzi aquests càlculs i que pugueu reusar més endavant.
+
+```{r 5.1.2.1}
+# Taula de contingència
+taula = ftable(df$BW<2500,df$Sm)
+taula
+```
+
+On la columna indica si el pes del nadó és considerat "baix pes" (menor de 2.5Kg). La columna si la mare és o no fumadora. Hi ha un total de 107 nadons considerats de "baix pes".
+
+Ara, agafant els valors de la taula, aplicarem la següent fòrmula.
+
+```{r 5.1.2.2}
+degreesFreedom = (2-1)*(2-1)
+
+t11 = 238*193/300
+t12 = 238*107/300
+t21 = 62*193/300
+t22 = 62*107/300
+
+X211 = ((191 - t11) * (191 - t11)) / t11
+X212 = ((47 - t12) * (47 - t12)) / t12
+X221 = ((2 - t21) * (2 - t21)) / t21
+X222 = ((60 - t22) * (60 - t22)) / t22
+X2 = X211 + X221 + X212 + X222
+X2
+```
+
+Ara s'ha de veure si el punt crític és per sobre o per sota del valor X2 = 127.2
+
+El valor crític en la frontera amb un grau de llibertat, és el punt 3.75, i el nostre valor és molt per sobre d'aquest.
+
+
+P(Χ2 > 127) = 0
+
+La probabilitat de que la variable agafi un valor de 127 és practicament nul·la.
+
+
+#### 5.1.3 Conclusió del test
+Sobre la base dels resultats del test, es pot afirmar que existeix relació entre baix pes i mare fumadora?
+Expliqueu sobre la base del valor p, valor observat i valor crític.
+
+Com que el valor X2 és molt per sobre del valor crític (3.75). El valor caurà a la zona de refús i negarem l'hipòtesi nul·la.
+
+Si p-valor < α refuso H0
+Si p-valor > α acepto H0
+
+Com que p-valor és clarament molt aprop del valor zero, per tant, més petit al valor α=0.05, refuso l'hipòtesis nul·la.
+
+No s'aprecia ninguna relació entre el baix pes del nadó i si la mare és fumadora.
+
+
+#### 5.1.4 Interpretació
+Analitzeu si existeixen altres variables que puguin influir en l’anàlisi i com afectarien les conclusions extretes del test.
+
+Un altre variable relacionada amb el baix pes, com farem en el següent apartat, serà la de nadons no prematurs. Si no és un nadó prematur i és de baix pes, podria ser associat a la mare fumadora.
+
+En els primers apartats hem vist que el baix pes és molt relacionat amb el diàmetre biparietal i abdominal, però la relació més forta existia amb les setmanes de gestació.
+
+
+
+### 5.2 Anàlisi dels casos de baix pes (amb gestació >36)
+Realitzeu la mateixa anàlisi per als naixements a partir de la setmana 36. Per realitzar aquesta anàlisi, es considerarà baix pes en néixer els casos que es trobin en el primer quartil del pes, considerant només els casos amb setmanes de gestació superiors a 36.
+Podem concloure que es presenta el mateix patró de relació (d’independència o dependència entre les variables) que en el cas anterior? Interpreteu els resultats.
+
+
+#### 5.2.1 Hipòtesi
+Escriviu la hipòtesi nul·la i alternativa.
+
+L'hipòtesi nul·la és que hi ha relació entre el baix pes d'un nado nascut a partir de les 36 setmanes i que la mare sigui fumadora.
+L'hipòtesi alternativa és que NO hi ha relació entre el baix pes d'un nado nascut a partir de les 36 setmanes i que la mare sigui fumadora.
+
+H0: baix pes més enllà de les 36 setmanes i mare fumadora són dependents
+
+H1: baix pes més enllà de les 36 setmanes i mare fumadora són independents
+
+
+#### 5.2.2 Càlculs
+Realitzeu els càlculs. Podeu aprofitar la funció desenvolupada anteriorment. Mostreu els resultats dels càlculs.
+
+```{r 5.2.2.1}
+# Taula de contingència
+pes36 = df$BW[df$Ge>36]
+length(pes36)
+quantile(pes36)
+pes <- pes36[pes36 < 2951]
+length(pes)
+
+taula = matrix(c(32,2,300-60-2-32,60),ncol=2,byrow=TRUE)
+colnames(taula) <- c("NO fumadora","fumadora")
+rownames(taula) <- c("baixPes >36set","pes bo")
+taula
+```
+
+
+```{r 5.2.2.2}
+degreesFreedom = (2-1)*(2-1)
+
+t11 = 238*34/300
+t12 = 238*266/300
+t21 = 62*34/300
+t22 = 62*266/300
+
+X211 = ((32 - t11) * (32 - t11)) / t11
+X212 = ((206 - t12) * (206 - t12)) / t12
+X221 = ((2 - t21) * (2 - t21)) / t21
+X222 = ((60 - t22) * (60 - t22)) / t22
+X2 = X211 + X221 + X212 + X222
+X2
+```
+
+Ara s'ha de veure si el punt crític és per sobre o per sota del valor X2 = 5.11
+
+El valor crític en la frontera amb un grau de llibertat, és el punt 3.75, i el nostre valor és per sobre d'aquest.
+
+
+P(Χ2 > 5.11) = 0.02
+
+La probabilitat de que la variable agafi un valor de 5.11 és practicament poc, 0.02 és més petit que 0.05.
+
+
+
+#### 5.2.3 Conclusió
+Interpreteu els resultats obtinguts i responeu a la pregunta plantejada. Justifiqueu les vostres conclusions a partir del valor observat, valor crític i valor p.
+
+
+Igual que abans, el valor X2 queda fora del llindar per quasi dos punts respecte el valor crític i el valor de p-value 0.02 < 0.05. 
+
+La conclusió segueix sent que el pes dels nados de baix peix, que no son prematurs, per sobre de les 36 setmanes no tenen ninguna relació si la mare és o no fumadora. 
+
+Això si, aquests valors respecte si els nados han nascut a partir de les 36 setmanes són molt més ajustats que si no tenim en compte aquestes setmanes.
+
+Però si mantenim l'interval de confiança del 95% segueix sense ser relacionat. Si optem per agafar un interval de confiança del 98% o 99%, la cosa aquí ja canviaria.
+
+
+
+### 6 Conclusions de l’anàlisi
+Finalment, a partir de tot l’estudi realitzat, escriviu les conclusions d’aquest estudi, donant resposta ben fonamentada a les preguntes plantejades a l’inici de l’activitat.
+
+#### 1. Interval de confiança al 95% del pes en néixer
+
+L'interval es situa en entre 2660.792 grams i 2747.245 grams.
+Si agafem mostres amb les mateixes característiques, el 95% dels cops haurien de ser dins d'aquest interval.
+
+#### 2. ¿El pes mitjà en néixer difereix significativament de 3.5kg?
+
+Sí, el pes mitjà amb el 95% de confiança és mou en l'interval esmentat anteriorment. Amb els valors de confiança i el p-value es veu clarament que el més mitja dels nadons s'allunya molt dels 3.5Kg.
+
+#### 3. ¿El pes en néixer de les nenes és diferent al dels nens?
+
+No hi ha suficient diferència per asumir que el pes al nèxer sigui diferent als nens que a les nenes.
+Els dos valors entren dins de l'interval del 95% de confiança i s'allunyen massa del punt crític.
+
+
+#### 4. ¿La proporció de naixements de nens és inferior als naixements de nenes?
+
+La proporció de nens és inferior al naixement de nenes. Ho hem comrpobat, un altre cop amb els valors de confiança, a més de la p-value, aceptat l'hipòtesi nul·la.
+
+#### 5. ¿Existeix una relació entre baix pes en néixer i el fet que la mare sigui fumadora?
+No, no existeix una relació ben clara entre el pes del nadó al néixer i si la mare és fumadora. La p-value és massa baixa, no entra dins de l'interval de confiança del 95%.
+
+És cert que si agafem només els nadons nascuts a partir de les 36 setmanes i asumim que un nadó és de baix pes agafant el primer quartil dels nados nascuts a partir de les 36 setmanes. Podriem veure una petita relació a partir del 98% de confiança. Massa baix per assegurar una relació. 
+
+

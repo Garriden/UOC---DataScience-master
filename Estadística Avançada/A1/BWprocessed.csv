@@ -1,0 +1,301 @@
+"HP","City","Day","BW","BPD","AD","Sex","Ge","Sm","Hora","Minut"
+"H.G.U.Gregorio Marañón","Madrid","Divendres",2200,82,90,"M",33,"N",13,20
+"H.U.de Bellvitge","Barcelona","Dilluns",4100,97,129,"M",43,"N",11,0
+"H.U.de Bellvitge","Barcelona","Dimarts",4200,97,133,"F",43,"N",24,0
+"H.Clínic","Barcelona","Dijous",1300,74,71,"M",33,"S",18,38
+"H.U.12 de octubre","Madrid","Dimecres",1150,68,80,"F",33,"S",9,53
+"H.G.U.Gregorio Marañón","Madrid","Dissabte",3400,94,110,"F",39,"N",5,40
+"H.M.I. Virgen de las Nieves","Granada","Dimecres",2500,87,105,"F",34,"N",9,33
+"C.U.Navarra","Pamplona","Divendres",3100,92,109,"F",37,"N",6,51
+"H.U.La Paz","Madrid","Dimecres",2550,86,106,"F",34,"N",8,25
+"C.U.Navarra","Pamplona","Divendres",2600,93,102,"F",34,"N",12,52
+"H.Clínic","Barcelona","Diumenge",2200,86,90,"M",33,"N",24,0
+"H.U.de Bellvitge","Barcelona","Dimecres",2250,90,96,"F",34,"N",14,43
+"H.U.Quirón Dexeus","Barcelona","Divendres",2550,94,102,"F",34,"N",9,39
+"H.U.Virgen del Rocío","Sevilla","Dilluns",1804,82,90,"F",33,"S",11,23
+"H.M.I. Virgen de las Nieves","Granada","Dimarts",3150,91,107,"F",37,"N",10,40
+"H.Clínic","Barcelona","Dimecres",1250,74,94,"F",33,"S",24,0
+"H.U.Politècnic La Fe","Valencia","Dissabte",2350,92,100,"M",34,"N",10,27
+"H.U.de Bellvitge","Barcelona","Dimarts",4100,97,129,"F",43,"N",17,49
+"H.U.Quirón Dexeus","Barcelona","Divendres",2750,93,105,"M",36,"N",16,8
+"H.Clínic","Barcelona","Dimecres",2600,93,102,"M",34,"N",16,2
+"H.U.Politècnic La Fe","Valencia","Divendres",2009,89,96,"M",34,"S",13,10
+"H.M.I. Virgen de las Nieves","Granada","Dimecres",2500,90,96,"M",34,"N",8,40
+"H.U.12 de octubre","Madrid","Dijous",2870,95,102,"F",40,"S",16,21
+"H.U.Quirón Dexeus","Barcelona","Diumenge",3600,92,116,"F",41,"N",10,33
+"H.U.Quirón Dexeus","Barcelona","Dijous",2500,84,97,"M",34,"N",9,34
+"H.U.Quirón Dexeus","Barcelona","Dissabte",1750,88,89,"M",33,"S",10,15
+"H.U.La Paz","Madrid","Dimecres",3150,91,107,"M",37,"N",18,3
+"H.U.Politècnic La Fe","Valencia","Divendres",2000,90,93,"F",33,"N",24,0
+"H.U.de Bellvitge","Barcelona","Dijous",1950,83,86,"M",33,"S",10,39
+"H.U.Vall d'Hebron","Barcelona","Diumenge",2900,93,110,"F",38,"N",10,36
+"H.U.La Paz","Madrid","Divendres",1700,84,85,"M",33,"S",10,59
+"H.U.Virgen del Rocío","Sevilla","Dimecres",2800,89,103,"M",36,"N",9,50
+"H.U.La Paz","Madrid","Dilluns",2600,85,98,"F",34,"N",8,46
+"H.U.de Bellvitge","Barcelona","Dijous",1722,82,90,"M",33,"S",10,54
+"H.M.I. Virgen de las Nieves","Granada","Diumenge",4100,97,129,"F",43,"N",23,8
+"H.M.I. Virgen de las Nieves","Granada","Dimecres",3150,93,110,"F",38,"N",13,47
+"H.U.Quirón Dexeus","Barcelona","Diumenge",2132,92,100,"M",34,"S",7,24
+"H.U.Vall d'Hebron","Barcelona","Dimarts",2950,94,108,"F",38,"N",9,17
+"H.U.de Bellvitge","Barcelona","Divendres",1700,83,90,"M",33,"S",11,56
+"H.U.Vall d'Hebron","Barcelona","Dijous",2850,91,105,"M",38,"N",10,27
+"H.U.Quirón Dexeus","Barcelona","Dilluns",2050,80,96,"M",33,"N",4,0
+"H.G.U.Gregorio Marañón","Madrid","Dijous",4000,95,98,"F",43,"N",7,27
+"H.U.Politècnic La Fe","Valencia","Dissabte",2350,90,92,"M",33,"N",7,24
+"H.U.Politècnic La Fe","Valencia","Dimarts",3150,91,107,"M",37,"N",8,57
+"H.U.Vall d'Hebron","Barcelona","Divendres",2900,91,100,"M",38,"N",8,37
+"H.Clínic","Barcelona","Dissabte",2680,88,105,"M",36,"N",7,39
+"H.U.Quirón Dexeus","Barcelona","Dissabte",4200,97,133,"F",43,"N",14,16
+"C.U.Navarra","Pamplona","Divendres",2700,89,105,"M",36,"N",14,49
+"H.U.Vall d'Hebron","Barcelona","Dilluns",2350,89,94,"M",34,"N",8,49
+"C.U.Navarra","Pamplona","Dissabte",2100,82,90,"M",33,"N",24,0
+"C.U.Navarra","Pamplona","Dimecres",3550,93,108,"M",41,"N",10,9
+"H.U.Virgen del Rocío","Sevilla","Dissabte",3500,100,110,"M",40,"N",3,25
+"H.U.La Paz","Madrid","Dimecres",2600,92,103,"F",34,"N",18,28
+"C.U.Navarra","Pamplona","Dimarts",1700,82,79,"M",33,"S",15,27
+"C.U.Navarra","Pamplona","Dissabte",2197.6,88,105,"F",36,"S",8,24
+"H.U.Vall d'Hebron","Barcelona","Dilluns",1750,88,89,"F",33,"S",9,39
+"H.U.Quirón Dexeus","Barcelona","Diumenge",2255,88,99,"F",36,"S",10,46
+"H.U.de Bellvitge","Barcelona","Dimecres",2050,90,92,"M",33,"N",5,35
+"H.U.Quirón Dexeus","Barcelona","Dissabte",2800,90,108,"M",36,"N",19,20
+"H.M.I. Virgen de las Nieves","Granada","Dimarts",2000,87,93,"F",33,"N",7,24
+"H.U.de Bellvitge","Barcelona","Dimarts",2900,91,101,"M",38,"N",10,56
+"H.U.12 de octubre","Madrid","Dissabte",1435,88,89,"M",33,"S",11,0
+"H.U.de Bellvitge","Barcelona","Dijous",1025,64,71,"M",33,"S",15,32
+"H.U.12 de octubre","Madrid","Divendres",3100,92,119,"M",37,"N",18,27
+"H.U.La Paz","Madrid","Dimecres",2950,92,107,"M",38,"N",9,31
+"H.U.Vall d'Hebron","Barcelona","Dissabte",2350,88,92,"F",34,"N",8,56
+"H.M.I. Virgen de las Nieves","Granada","Dimecres",2950,94,108,"M",38,"N",7,43
+"H.G.U.Gregorio Marañón","Madrid","Dilluns",2450,91,98,"F",34,"N",10,5
+"H.U.Politècnic La Fe","Valencia","Dimarts",2750,94,108,"F",36,"N",6,33
+"H.U.La Paz","Madrid","Diumenge",1599,83,86,"F",33,"S",19,48
+"H.U.Vall d'Hebron","Barcelona","Dissabte",2870,95,102,"F",40,"S",9,41
+"C.U.Navarra","Pamplona","Dimecres",2500,90,95,"M",34,"N",7,8
+"C.U.Navarra","Pamplona","Dimarts",3800,93,118,"F",43,"N",3,43
+"C.U.Navarra","Pamplona","Dimarts",3000,91,105,"F",38,"N",11,29
+"H.G.U.Gregorio Marañón","Madrid","Dissabte",1700,84,85,"F",33,"S",11,56
+"H.U.Politècnic La Fe","Valencia","Diumenge",2900,92,108,"M",38,"N",13,13
+"H.U.12 de octubre","Madrid","Divendres",2378,92,108,"M",38,"S",9,26
+"H.U.12 de octubre","Madrid","Divendres",1150,68,80,"F",33,"S",9,10
+"H.U.de Bellvitge","Barcelona","Dilluns",2550,86,106,"F",34,"N",11,3
+"H.U.La Paz","Madrid","Dimecres",2750,93,105,"F",36,"N",14,48
+"H.U.Quirón Dexeus","Barcelona","Dijous",2350,92,100,"M",34,"N",9,37
+"H.U.Virgen del Rocío","Sevilla","Divendres",3100,92,112,"F",37,"N",14,7
+"C.U.Navarra","Pamplona","Dijous",3150,91,107,"M",37,"N",8,44
+"H.M.I. Virgen de las Nieves","Granada","Dijous",3500,95,102,"F",40,"N",12,3
+"C.U.Navarra","Pamplona","Dijous",2500,87,105,"F",34,"N",12,48
+"H.M.I. Virgen de las Nieves","Granada","Diumenge",2050,87,90,"M",33,"N",11,30
+"H.U.Quirón Dexeus","Barcelona","Diumenge",1950,83,86,"F",33,"S",11,49
+"H.M.I. Virgen de las Nieves","Granada","Dijous",1450,80,78,"F",33,"S",10,49
+"H.U.de Bellvitge","Barcelona","Dimarts",2800,91,103,"M",36,"N",11,46
+"H.U.Virgen del Rocío","Sevilla","Dijous",2750,88,99,"F",36,"N",14,41
+"H.U.Politècnic La Fe","Valencia","Dimarts",2650,92,98,"M",36,"N",12,44
+"H.G.U.Gregorio Marañón","Madrid","Dilluns",2050,81,95,"F",33,"N",7,34
+"H.U.Vall d'Hebron","Barcelona","Diumenge",1450,80,78,"M",33,"S",24,0
+"H.U.Vall d'Hebron","Barcelona","Dimarts",2900,93,110,"M",38,"N",9,44
+"H.M.I. Virgen de las Nieves","Granada","Dissabte",1250,64,71,"F",33,"S",24,0
+"H.G.U.Gregorio Marañón","Madrid","Dijous",2680,88,105,"F",36,"N",9,21
+"H.U.12 de octubre","Madrid","Dimarts",2009,92,100,"F",34,"S",10,30
+"H.U.Virgen del Rocío","Sevilla","Dimecres",2680,88,105,"M",36,"N",13,45
+"H.G.U.Gregorio Marañón","Madrid","Dimecres",2900,84,104,"F",38,"N",8,54
+"H.U.Quirón Dexeus","Barcelona","Dissabte",3200,95,105,"M",37,"N",5,34
+"H.U.de Bellvitge","Barcelona","Divendres",1250,83,94,"F",33,"S",1,52
+"H.G.U.Gregorio Marañón","Madrid","Dimarts",2700,89,105,"F",36,"N",9,49
+"H.U.La Paz","Madrid","Divendres",2450,92,100,"F",34,"N",8,0
+"H.U.Quirón Dexeus","Barcelona","Dijous",3100,92,112,"F",37,"N",10,33
+"H.U.12 de octubre","Madrid","Divendres",2419,92,107,"F",38,"S",9,11
+"H.G.U.Gregorio Marañón","Madrid","Dimecres",2460,91,108,"F",38,"S",4,12
+"C.U.Navarra","Pamplona","Divendres",3300,92,114,"M",39,"N",8,55
+"H.M.I. Virgen de las Nieves","Granada","Divendres",4000,96,115,"M",43,"N",8,21
+"H.U.La Paz","Madrid","Dilluns",2550,94,102,"F",34,"N",13,23
+"H.M.I. Virgen de las Nieves","Granada","Divendres",3800,93,118,"M",43,"N",13,12
+"H.M.I. Virgen de las Nieves","Granada","Divendres",2500,91,98,"M",34,"N",8,30
+"H.U.Quirón Dexeus","Barcelona","Dimecres",3150,91,107,"M",37,"N",23,33
+"H.U.Quirón Dexeus","Barcelona","Dimarts",3200,93,114,"M",37,"N",10,2
+"H.U.12 de octubre","Madrid","Divendres",3300,94,103,"F",39,"N",13,16
+"H.U.Politècnic La Fe","Valencia","Dissabte",3100,92,109,"M",37,"N",7,56
+"H.U.Politècnic La Fe","Valencia","Divendres",3250,96,102,"M",39,"N",12,39
+"H.U.de Bellvitge","Barcelona","Divendres",2700,89,105,"M",36,"N",6,39
+"H.U.de Bellvitge","Barcelona","Diumenge",3600,84,116,"F",41,"N",13,46
+"H.Clínic","Barcelona","Divendres",2750,93,105,"F",36,"N",16,57
+"H.G.U.Gregorio Marañón","Madrid","Dimarts",2750,89,110,"M",36,"N",16,22
+"H.U.Politècnic La Fe","Valencia","Divendres",1700,83,90,"M",33,"S",12,7
+"C.U.Navarra","Pamplona","Dimecres",3300,93,103,"M",39,"N",9,3
+"H.U.Vall d'Hebron","Barcelona","Dilluns",2000,90,93,"M",33,"N",9,48
+"H.U.Quirón Dexeus","Barcelona","Dijous",2350,89,94,"F",34,"N",12,17
+"H.U.Politècnic La Fe","Valencia","Dissabte",2500,84,97,"M",34,"N",12,13
+"H.Clínic","Barcelona","Dilluns",2600,92,105,"F",34,"N",5,39
+"H.U.de Bellvitge","Barcelona","Divendres",1150,68,73,"F",33,"S",21,23
+"H.G.U.Gregorio Marañón","Madrid","Divendres",2550,86,106,"F",34,"N",14,0
+"H.M.I. Virgen de las Nieves","Granada","Dissabte",3400,94,110,"F",39,"N",11,16
+"H.G.U.Gregorio Marañón","Madrid","Dimarts",3650,94,107,"F",43,"N",13,3
+"H.U.Virgen del Rocío","Sevilla","Dijous",2050,90,92,"M",33,"N",4,48
+"C.U.Navarra","Pamplona","Dijous",3100,92,119,"F",37,"N",11,59
+"H.U.12 de octubre","Madrid","Dimecres",4850,95,118,"M",43,"N",13,34
+"H.U.Politècnic La Fe","Valencia","Dilluns",1150,68,80,"M",33,"S",6,43
+"H.G.U.Gregorio Marañón","Madrid","Dimecres",3000,94,101,"M",38,"N",17,10
+"H.U.La Paz","Madrid","Divendres",1800,84,89,"F",33,"S",10,24
+"H.U.La Paz","Madrid","Dissabte",3800,93,118,"F",43,"N",16,6
+"H.U.de Bellvitge","Barcelona","Dissabte",2050,80,96,"F",33,"N",8,48
+"H.U.12 de octubre","Madrid","Dimecres",2800,91,106,"F",36,"N",10,24
+"H.U.Politècnic La Fe","Valencia","Dijous",1250,74,94,"F",33,"S",13,32
+"H.U.Vall d'Hebron","Barcelona","Dijous",2000,90,93,"M",33,"N",14,42
+"H.U.12 de octubre","Madrid","Divendres",1950,83,86,"F",33,"S",4,3
+"H.U.Quirón Dexeus","Barcelona","Dimarts",1700,80,90,"F",33,"S",16,25
+"H.U.La Paz","Madrid","Dissabte",2950,92,100,"F",38,"N",12,34
+"H.U.Vall d'Hebron","Barcelona","Dijous",2950,93,108,"F",38,"N",24,0
+"H.G.U.Gregorio Marañón","Madrid","Dissabte",2500,90,96,"F",34,"N",8,15
+"H.U.Quirón Dexeus","Barcelona","Dissabte",2950,91,100,"F",38,"N",17,50
+"H.Clínic","Barcelona","Dimecres",3100,94,110,"F",37,"N",13,43
+"H.U.Politècnic La Fe","Valencia","Dissabte",3100,91,102,"F",37,"N",20,34
+"H.Clínic","Barcelona","Dissabte",3300,94,110,"F",39,"N",9,58
+"H.Clínic","Barcelona","Dijous",4850,95,118,"M",43,"N",4,35
+"C.U.Navarra","Pamplona","Dilluns",2000,90,93,"F",33,"N",13,48
+"H.U.de Bellvitge","Barcelona","Dissabte",2900,89,97,"F",38,"N",8,48
+"H.U.Quirón Dexeus","Barcelona","Diumenge",2900,89,97,"M",38,"N",13,31
+"H.U.Vall d'Hebron","Barcelona","Dimarts",1150,68,80,"M",33,"S",16,18
+"C.U.Navarra","Pamplona","Divendres",2050,87,90,"M",33,"N",7,16
+"H.M.I. Virgen de las Nieves","Granada","Dimarts",2500,87,105,"F",34,"N",2,38
+"H.M.I. Virgen de las Nieves","Granada","Dilluns",3800,93,118,"F",43,"N",14,48
+"H.U.La Paz","Madrid","Dijous",2600,86,98,"F",34,"N",3,39
+"H.M.I. Virgen de las Nieves","Granada","Dilluns",3600,97,112,"F",41,"N",9,50
+"H.U.Quirón Dexeus","Barcelona","Dissabte",2050,90,92,"F",33,"N",6,50
+"H.U.de Bellvitge","Barcelona","Dimarts",2500,90,95,"F",34,"N",13,15
+"H.U.Politècnic La Fe","Valencia","Dimecres",3200,94,110,"F",37,"N",18,53
+"H.Clínic","Barcelona","Divendres",3300,95,112,"F",39,"N",3,15
+"H.U.Quirón Dexeus","Barcelona","Dissabte",2350,89,94,"M",34,"N",15,17
+"H.Clínic","Barcelona","Diumenge",2350,88,92,"F",34,"N",8,41
+"H.M.I. Virgen de las Nieves","Granada","Dilluns",2900,84,104,"M",38,"N",12,16
+"H.U.Quirón Dexeus","Barcelona","Divendres",3680,96,120,"M",43,"N",8,41
+"H.U.Politècnic La Fe","Valencia","Dijous",2800,90,108,"M",36,"N",13,36
+"C.U.Navarra","Pamplona","Dimarts",2850,91,105,"F",38,"N",9,48
+"H.U.de Bellvitge","Barcelona","Dimecres",2950,92,107,"M",38,"N",12,58
+"H.U.12 de octubre","Madrid","Dissabte",1750,88,89,"M",33,"S",10,45
+"H.U.Vall d'Hebron","Barcelona","Dijous",4200,97,133,"M",43,"N",7,19
+"H.M.I. Virgen de las Nieves","Granada","Dimecres",2050,87,90,"F",33,"N",5,41
+"H.U.Politècnic La Fe","Valencia","Divendres",1650,85,82,"F",33,"S",12,6
+"H.U.Politècnic La Fe","Valencia","Dijous",2900,92,104,"M",38,"N",15,24
+"H.U.Politècnic La Fe","Valencia","Diumenge",3250,96,102,"F",39,"N",20,51
+"H.U.de Bellvitge","Barcelona","Dissabte",3400,88,113,"F",39,"N",7,45
+"H.U.12 de octubre","Madrid","Diumenge",3300,93,103,"M",39,"N",16,3
+"H.M.I. Virgen de las Nieves","Granada","Dilluns",2550,86,106,"F",34,"N",13,55
+"C.U.Navarra","Pamplona","Dimarts",2950,94,108,"F",38,"N",17,46
+"H.U.Politècnic La Fe","Valencia","Dijous",4000,95,98,"M",43,"N",6,16
+"H.U.12 de octubre","Madrid","Dimecres",4200,95,133,"F",43,"N",9,32
+"H.U.Vall d'Hebron","Barcelona","Diumenge",4000,96,115,"F",43,"N",7,41
+"H.U.12 de octubre","Madrid","Dimecres",3000,94,101,"M",38,"N",10,52
+"H.U.12 de octubre","Madrid","Diumenge",1650,85,82,"F",33,"S",11,4
+"H.U.La Paz","Madrid","Dimecres",3500,100,110,"F",40,"N",7,41
+"H.U.Quirón Dexeus","Barcelona","Divendres",3000,94,101,"M",38,"N",7,14
+"H.G.U.Gregorio Marañón","Madrid","Dilluns",2450,92,100,"F",34,"N",7,16
+"H.U.La Paz","Madrid","Dijous",2450,91,98,"M",34,"N",11,7
+"H.U.Virgen del Rocío","Sevilla","Dimecres",3000,92,100,"M",38,"N",15,16
+"H.G.U.Gregorio Marañón","Madrid","Dissabte",2700,89,110,"M",36,"N",15,4
+"H.U.de Bellvitge","Barcelona","Dilluns",2800,91,103,"M",36,"N",13,10
+"H.Clínic","Barcelona","Divendres",1250,64,71,"M",33,"S",12,40
+"H.U.Virgen del Rocío","Sevilla","Dissabte",4000,95,98,"F",43,"N",15,0
+"H.Clínic","Barcelona","Dijous",4200,97,133,"F",43,"N",14,0
+"H.U.de Bellvitge","Barcelona","Dissabte",2350,89,94,"F",34,"N",8,31
+"H.U.de Bellvitge","Barcelona","Diumenge",3000,91,108,"F",38,"N",7,20
+"H.U.de Bellvitge","Barcelona","Diumenge",4850,95,118,"F",43,"N",13,6
+"H.U.Vall d'Hebron","Barcelona","Dimarts",2500,90,96,"F",34,"N",18,18
+"H.U.12 de octubre","Madrid","Dijous",1700,80,90,"M",33,"S",3,59
+"H.U.de Bellvitge","Barcelona","Dissabte",2200,82,96,"M",33,"N",13,8
+"H.U.Virgen del Rocío","Sevilla","Divendres",2200,82,90,"M",33,"N",9,34
+"H.U.12 de octubre","Madrid","Divendres",2900,89,97,"M",38,"N",6,50
+"H.U.Virgen del Rocío","Sevilla","Dimarts",2450,92,100,"F",34,"N",12,43
+"H.U.Quirón Dexeus","Barcelona","Divendres",2700,89,105,"M",36,"N",6,37
+"H.Clínic","Barcelona","Dilluns",4000,96,115,"M",43,"N",24,0
+"H.Clínic","Barcelona","Divendres",3100,94,110,"F",37,"N",10,32
+"H.M.I. Virgen de las Nieves","Granada","Dimecres",4000,95,98,"F",43,"N",14,19
+"C.U.Navarra","Pamplona","Dissabte",1300,74,71,"M",33,"S",7,6
+"H.Clínic","Barcelona","Dimarts",3550,93,108,"F",41,"N",6,55
+"C.U.Navarra","Pamplona","Dissabte",2600,92,100,"F",34,"N",8,1
+"H.U.La Paz","Madrid","Dimarts",1450,80,78,"M",33,"S",12,56
+"H.U.de Bellvitge","Barcelona","Dilluns",3800,93,118,"F",43,"N",13,17
+"H.U.de Bellvitge","Barcelona","Dissabte",3100,92,119,"M",37,"N",10,19
+"H.U.de Bellvitge","Barcelona","Divendres",1700,83,90,"F",33,"S",8,58
+"H.Clínic","Barcelona","Divendres",2500,87,105,"M",34,"N",13,25
+"C.U.Navarra","Pamplona","Divendres",2500,91,95,"M",34,"N",11,55
+"H.G.U.Gregorio Marañón","Madrid","Diumenge",3100,94,110,"F",37,"N",4,45
+"H.G.U.Gregorio Marañón","Madrid","Dilluns",2900,90,110,"F",38,"N",12,13
+"H.U.Vall d'Hebron","Barcelona","Dilluns",2800,90,108,"M",36,"N",13,7
+"H.G.U.Gregorio Marañón","Madrid","Dimecres",3050,90,100,"F",38,"N",6,15
+"C.U.Navarra","Pamplona","Dissabte",2450,91,98,"M",34,"N",10,54
+"H.U.Vall d'Hebron","Barcelona","Dilluns",1700,80,90,"M",33,"S",10,37
+"H.Clínic","Barcelona","Dissabte",3000,88,105,"F",38,"N",7,49
+"H.U.12 de octubre","Madrid","Divendres",1650,85,82,"F",33,"S",9,9
+"H.M.I. Virgen de las Nieves","Granada","Divendres",3400,88,113,"F",39,"N",12,29
+"H.M.I. Virgen de las Nieves","Granada","Dimarts",1750,88,89,"F",33,"S",13,18
+"H.G.U.Gregorio Marañón","Madrid","Diumenge",2050,81,95,"M",33,"N",17,19
+"H.Clínic","Barcelona","Dissabte",2800,91,106,"F",36,"N",21,51
+"H.G.U.Gregorio Marañón","Madrid","Dissabte",2550,94,102,"F",34,"N",11,20
+"H.Clínic","Barcelona","Divendres",2350,92,100,"F",34,"N",13,10
+"H.U.de Bellvitge","Barcelona","Diumenge",3400,94,110,"M",39,"N",15,58
+"C.U.Navarra","Pamplona","Dimecres",2500,90,95,"F",34,"N",8,28
+"H.U.de Bellvitge","Barcelona","Dimarts",2600,92,105,"F",34,"N",9,11
+"H.U.Quirón Dexeus","Barcelona","Dilluns",2600,85,98,"F",34,"N",12,1
+"H.U.Vall d'Hebron","Barcelona","Dimecres",1450,80,78,"F",33,"S",9,25
+"H.U.Vall d'Hebron","Barcelona","Dilluns",3000,91,105,"F",38,"N",12,25
+"H.U.Politècnic La Fe","Valencia","Divendres",3050,90,100,"F",38,"N",19,32
+"H.U.de Bellvitge","Barcelona","Dissabte",1173,72,73,"F",33,"S",8,22
+"H.U.Vall d'Hebron","Barcelona","Divendres",1700,80,90,"F",33,"S",14,15
+"H.G.U.Gregorio Marañón","Madrid","Dimecres",1450,80,82,"F",33,"S",9,20
+"H.U.de Bellvitge","Barcelona","Dissabte",3000,92,100,"F",38,"N",23,0
+"H.U.Politècnic La Fe","Valencia","Dijous",2950,93,108,"M",38,"N",24,0
+"H.U.La Paz","Madrid","Divendres",2650,92,103,"M",36,"N",12,19
+"H.U.Quirón Dexeus","Barcelona","Dimecres",2950,92,107,"M",38,"N",19,42
+"H.U.Quirón Dexeus","Barcelona","Dijous",3600,84,116,"F",41,"N",14,20
+"H.U.Quirón Dexeus","Barcelona","Dilluns",1150,68,80,"F",33,"S",8,4
+"H.U.Vall d'Hebron","Barcelona","Dimecres",3000,92,105,"M",38,"N",12,43
+"H.U.Quirón Dexeus","Barcelona","Dimarts",3680,96,120,"F",43,"N",12,56
+"H.U.Politècnic La Fe","Valencia","Dimarts",2900,91,101,"F",38,"N",6,25
+"H.U.12 de octubre","Madrid","Dimarts",2750,88,99,"F",36,"N",13,12
+"H.M.I. Virgen de las Nieves","Granada","Dimecres",2800,89,103,"F",36,"N",5,23
+"H.G.U.Gregorio Marañón","Madrid","Dilluns",1650,85,82,"F",33,"S",11,43
+"H.U.Quirón Dexeus","Barcelona","Dimarts",2000,87,93,"F",33,"N",9,52
+"H.U.12 de octubre","Madrid","Dijous",1450,80,78,"F",33,"S",9,56
+"H.U.Politècnic La Fe","Valencia","Divendres",3550,93,108,"F",41,"N",23,43
+"H.U.Quirón Dexeus","Barcelona","Divendres",2000,90,93,"M",33,"N",8,51
+"H.U.Quirón Dexeus","Barcelona","Dimecres",2200,86,90,"M",33,"N",9,34
+"H.Clínic","Barcelona","Dissabte",2750,94,108,"F",36,"N",12,58
+"H.U.Virgen del Rocío","Sevilla","Dissabte",2500,87,105,"M",34,"N",15,55
+"H.U.Quirón Dexeus","Barcelona","Dissabte",2680,88,105,"F",36,"N",9,20
+"H.U.de Bellvitge","Barcelona","Dimarts",2700,92,102,"M",36,"N",9,20
+"H.U.Virgen del Rocío","Sevilla","Dilluns",4850,95,118,"F",43,"N",11,33
+"H.U.Vall d'Hebron","Barcelona","Dissabte",2500,91,98,"M",34,"N",7,16
+"C.U.Navarra","Pamplona","Diumenge",1650,85,82,"M",33,"S",7,58
+"H.U.Vall d'Hebron","Barcelona","Dijous",1700,84,85,"M",33,"S",11,48
+"H.M.I. Virgen de las Nieves","Granada","Dissabte",3000,94,101,"M",38,"N",16,11
+"H.U.12 de octubre","Madrid","Dissabte",2750,93,105,"M",36,"N",8,25
+"H.M.I. Virgen de las Nieves","Granada","Dissabte",2200,86,90,"F",33,"N",13,42
+"H.Clínic","Barcelona","Divendres",2900,84,104,"F",38,"N",13,34
+"H.G.U.Gregorio Marañón","Madrid","Dilluns",2500,90,95,"F",34,"N",7,1
+"H.U.12 de octubre","Madrid","Dijous",2200,86,90,"M",33,"N",15,33
+"H.U.Politècnic La Fe","Valencia","Diumenge",2000,90,93,"M",33,"N",8,14
+"H.Clínic","Barcelona","Dilluns",2750,94,108,"F",36,"N",7,19
+"H.U.Politècnic La Fe","Valencia","Dissabte",2500,87,105,"F",34,"N",22,9
+"H.U.de Bellvitge","Barcelona","Dijous",2600,93,102,"F",34,"N",16,10
+"H.U.Quirón Dexeus","Barcelona","Dimarts",2500,91,98,"F",34,"N",13,4
+"H.U.de Bellvitge","Barcelona","Dimarts",3500,95,102,"F",40,"N",21,17
+"H.G.U.Gregorio Marañón","Madrid","Dimarts",3500,100,110,"M",40,"N",14,6
+"H.U.de Bellvitge","Barcelona","Diumenge",3600,97,112,"M",41,"N",7,46
+"H.M.I. Virgen de las Nieves","Granada","Divendres",2050,90,92,"M",33,"N",6,50
+"H.U.12 de octubre","Madrid","Dimecres",2750,89,110,"F",36,"N",10,56
+"H.U.Vall d'Hebron","Barcelona","Dilluns",1450,80,78,"F",33,"S",24,0
+"H.U.Quirón Dexeus","Barcelona","Dissabte",2600,92,105,"F",34,"N",10,44
+"H.U.Politècnic La Fe","Valencia","Divendres",1250,74,94,"M",33,"S",0,0
+"H.U.12 de octubre","Madrid","Dimecres",3550,93,108,"M",41,"N",13,46
+"C.U.Navarra","Pamplona","Dimarts",4100,97,129,"F",43,"N",2,36
+"H.U.Politècnic La Fe","Valencia","Dijous",3200,94,110,"F",37,"N",8,56
+"H.M.I. Virgen de las Nieves","Granada","Dimarts",2650,92,103,"M",36,"N",8,0
+"H.U.Politècnic La Fe","Valencia","Dimarts",2650,92,103,"F",36,"N",4,15
+"H.M.I. Virgen de las Nieves","Granada","Divendres",3200,93,114,"M",37,"N",21,25
+"H.Clínic","Barcelona","Dijous",3300,94,110,"M",39,"N",16,31
+"H.U.Politècnic La Fe","Valencia","Divendres",2450,92,100,"F",34,"N",7,23
+"H.G.U.Gregorio Marañón","Madrid","Dijous",3400,88,113,"M",39,"N",11,22
+"H.U.de Bellvitge","Barcelona","Dimecres",2450,89,96,"M",34,"N",18,6
+"C.U.Navarra","Pamplona","Dimarts",1700,83,90,"F",33,"S",16,35
+"H.U.Virgen del Rocío","Sevilla","Divendres",2350,88,92,"F",34,"N",12,37
+"H.U.de Bellvitge","Barcelona","Divendres",3600,84,116,"F",41,"N",11,35
+"H.U.de Bellvitge","Barcelona","Dijous",3250,96,102,"M",39,"N",5,50

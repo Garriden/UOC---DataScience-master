@@ -1,0 +1,463 @@
+---
+title: "A1"
+author: "Marc Garrido Casas"
+date: '`r format(Sys.Date(),"%e de %B, %Y")`'
+geometry: margin=2cm
+output:
+  html_document:
+    toc: yes
+    df_print: paged
+    error: false
+    warning: false
+  pdf_document:
+    toc: yes
+    df_print: paged
+    error: false
+    warning: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load_libraries, include=FALSE}
+library(knitr)
+```
+## 1 Càrrega de l’arxiu de dades i breu descripció
+
+Obrir el fitxer BWn.csv i examinar el tipus de dades amb què R ha interpretat cada variable. Avaluar també
+els valors resum de cada tipus de variable.
+
+```{r chunck1}
+setwd("C:/Users/garridom/Documents/UOC/Estadistica/A1")
+df <- read.csv("BWn.csv", header = TRUE, sep = ';', row.names=1)
+head(df)
+dfOriginal<-data.frame(df)
+#sapply(df, class) # El head() ja mostra el tipus de variables.
+```
+
+
+## 2. Normalització de les variables qualitatives
+
+### 2.1 Hospital, Ciutat
+
+En primer lloc, s’examinaran les possibles inconsistències en les variables HP i City. Detecteu si hi ha diversos
+noms per a un mateix hospital i/o per a una mateixa ciutat i si és així, normalitzar els noms, segons la llista
+de noms proporcionada anteriorment.
+Comproveu així mateix la possible inconsistència entre l’hospital i la seva ciutat. En cas de incosistencia,
+identificar-la, reportar-la i introduir els canvis necessaris.
+S’han de seguir els criteris especificats pel preprocessat.
+
+
+```{r chunck2}
+# Tots els hospitals que existeixen dins el dataset.
+summary(df[1], maxsum = 20)
+# Els hospitals són correctament escrits.
+
+# Totes les ciutats que existeixen dins el dataset. 
+summary(df[2], maxsum = 20)
+# Veig que Valencia i Sevilla, pot estar escrit sense la primera majúscula.
+
+# Modificació
+df$City <- gsub('valencia', 'Valencia', df$City)
+df$City <- gsub('sevilla', 'Sevilla', df$City)
+
+```
+
+```{r chunck3}
+# Miro el nom dels hospitals per a cada ciutat.
+by(df[1], df$City, summary)
+# En efecte, alguns hospitals no concorden amb al ciutat. 
+
+# Modificació
+df[which(df[,1]=="H.U.de Bellvitge"),2] <- "Barcelona"
+df[which(df[,1]=="H.Clínic"),2] <- "Barcelona"
+df[which(df[,1]=="H.G.U.Gregorio Marañón"),2] <- "Madrid"
+df[which(df[,1]=="H.U.La Paz"),2] <- "Madrid"
+df[which(df[,1]=="H.M.I. Virgen de las Nieves"),2] <- "Granada"
+
+# Per a comprobar-ho, miro la ciutat de Valencia, que tenia uns quants hospitals mal indicats. 
+by(df[1], df$City == "Valencia", summary)
+```
+
+### 2.2 Dia de la setmana
+
+Verificar que els valors de la variable dia són correctes i normalitzar la variable dia segons les indicacions
+proporcionades. La variable ha de ser de tipus categòric (en R, factor).
+
+
+
+```{r chunck4}
+# He de substituïr el número pel nom del día de la setmana.
+head(df$Day)
+
+# Modificació
+df$Day <- gsub('1', 'Dilluns', df$Day)
+df$Day <- gsub('2', 'Dimarts', df$Day)
+df$Day <- gsub('3', 'Dimecres', df$Day)
+df$Day <- gsub('4', 'Dijous', df$Day)
+df$Day <- gsub('5', 'Divendres', df$Day)
+df$Day <- gsub('6', 'Dissabte', df$Day)
+df$Day <- gsub('7', 'Diumenge', df$Day)
+
+head(df$Day)
+
+```
+
+### 2.3 Sexe
+
+Normalitzar la variable sexe (Sex) segons les indicacions proporcionades.
+
+
+```{r chunck5}
+# He de substituïr el número pel nom del día de la setmana.
+summary(df[8], maxsum = 20)
+
+# Modificació
+df$Sex <- gsub('boy', 'M', df$Sex)
+df$Sex <- gsub('fem', 'F', df$Sex)
+df$Sex <- gsub('girl', 'F', df$Sex)
+
+# Vec que la forma més ràpida és mostrar tots els possibles Strings que hi apareixen. Després substituïrlos amb el gsub.
+
+# Convertir en majúscules.
+df$Sex <- toupper(df$Sex)
+```
+
+
+### 2.4 Mare fumadora
+
+Normalitzar els valors de la variable mare fumadora (Sm) segons les indicacions proporcionades.
+
+
+```{r chunck6}
+# He de substituïr el número pel nom del día de la setmana.
+summary(df[10], maxsum = 20)
+
+# Ja és correcte.
+```
+
+
+## 3 Normalització de les variables quantitatives
+
+Revisar el tipus de dada i el format de les variables que han de ser quantitatives. Convertiu a tipus numèric si les variables no s’han carregat amb aquest tipus. Abans, però, cal corregir les possibles inconsistències en el punt decimal. Reviseu, per a cada variable quantitativa el format especificat en els criteris de preprocés.
+
+### 3.1 Pes
+
+Tranformar la variable pes per convertir-la en un format numèric en grams. Per extreure el valor numèric d’un string en R, podeu fer servir expressions regulars i la funció str_extract. Podeu trobar informació a: https://stringr.tidyverse.org/articles/regular-expressions.html
+
+```{r chunck7}
+
+head(df[5])
+#Poden haver-hi valors en quilos, valors amb coma, amb punt. No se sap quants decimals hi haurà després de punt o coma.
+
+# Quedar-se amb els números només. Mantenint punts i comes.
+df$BW <- gsub("[^[:digit:].,]", "", df$BW)
+
+# Passar-ho a numeric
+df[5] <- lapply(df[5], as.numeric)
+
+# Per a cada cel·la de la columna on el pes sigui més petit que 10. Multipliquem el valor per a 1000, pasem de grams a quilos.
+#És evident que la mesura és pressa en quilos, ningún nadó pesa més de 10 quilos o menys de 10 grams.
+df[which(df[,5]<10),5] <- df[which(df[,5]<10),5]*1000
+
+head(df[5])
+```
+
+
+### 3.2 Diàmetre biparietal i Diàmetre abdominal
+Normalitzar les variables diàmetre biparietal i diàmetre abdominal segons les indicacions proporcionades.
+
+
+```{r chunck8}
+
+head(df[6])
+# Sembla que només m'he de quedar amb el número i pasar la columna a numeric.
+
+# Quedar-se amb els números només. Mantenint punts i comes.
+df$BPD <- gsub("[^[:digit:].,]", "", df$BPD)
+
+# Passar-ho a numeric
+df[6] <- lapply(df[6], as.numeric)
+
+head(df[6])
+```
+
+
+
+### 3.3 Setmanes de gestació
+
+Normalitzar la variable setmanes de gestació segons els criteris establerts.
+
+
+```{r chunck9}
+head(df[7])
+df$AD <- gsub("[^[:digit:].,]", "", df$AD)
+df[7] <- lapply(df[7], as.numeric)
+head(df[7])
+```
+
+
+```{r chunck10}
+head(df[9])
+
+# Substituir comas per punts.
+df$Ge <- gsub(',', '.', df$Ge)
+
+#Convertir a numeric.
+df[9] <- lapply(df[9], as.numeric)
+
+#Arrodonir al valor més pròxim.
+df[9] <-round(df[9],0)
+
+head(df[9])
+
+
+```
+
+
+### 3.4 Hora
+
+Transformar la variable hora a format HH: MM. Podeu fer servir llibreries o realitzar la transformació a partir del vostre propi codi.
+
+
+
+```{r chunck11}
+
+head(df[3])
+
+# Convertir totes les comes a punts
+df$Time <- gsub(',', '.', df$Time)
+
+# Pasar-ho a numeric
+df[3] <- lapply(df[3], as.numeric)
+
+
+# La veritat és que no entenc com el temps ha de ser un valor numèric entre 0 i 24 i en format HH:MM. Si agafo un valor entre 0 i 24, em quedarè només amb la hora. Si converteixo els minuts i ho poso en format HH:MM, llavors la variable deixarà de ser numèrica ja que hi ha un caràcter ':' enmig.
+
+# De moment separarè manualment la hora del minut, fent la conversió.
+
+# He decidit que em pendré la llibertat de separar la variable temps en dos variables numèriques, Hora i Minut. És mot comú fer això en datasets de biga data. A més, m'asegurarè que siguin variables enteres numèriques.
+
+Hora <- c()
+Minut <- c()
+
+# Per a cada valor de temps
+for(time in df[3]) {
+  # Agafar la part entera
+  hora <- floor(abs(time)) 
+  
+  # Agafar la part decimal
+  minut <- (abs(time) - floor(abs(time))) 
+  # Convertirla en minut (de 0 a 60)
+  minut <- floor(abs(minut*60))
+
+  # Afegir la nova hora i el nou minut a un vector
+  Hora <- hora
+  Minut <- minut
+}
+
+# Afegir els dos nous vectors que substituiran a temps al dataset. Sortian al final del dataset.
+df <- cbind(df, Hora)
+df <- cbind(df, Minut)
+
+# Elimino la columna temps que l'he convertida en dos columnes noves.
+df$Time <- NULL
+head(df)
+
+
+```
+
+
+
+
+## 4 Valors perduts
+
+Analitzar la presència de valors perduts. En el cas de detectar algun valor perdut en les variables quantitatives, realitzar una imputació de valors en aquestes variables. La imputació s’ha de fer amb els 3 veïns més propers usant la distància de Gower, usant només la informació de les variables quantitatives i dins d’aquestes, aquelles que tinguin sentit en la imputació de la variable. Després de realitzar la imputació cal verificar que els valors assignats s’han copiat sobre el conjunt de dades originals. Visualitzar el resultat de les imputacions  realitzades (per evitar mostrar tot el conjunt de dades, només s’han de mostrar els registres del conjunt de dades que contenen la imputació realitzada).
+
+
+
+```{r chunck12}
+
+sum(is.na(df))
+
+# Hi ha 18 valors nuls en tot el dataset.
+# Amb la següent comanda, vec en quina fila i columna es troben aquests
+which(is.na(df), arr.ind=TRUE)
+
+# Veure d'aprop la transforimació d'un valor nul.
+head(df[33:39,4], 7)
+
+#install.packages("VIM")
+
+#aplicar KNN (Gower distnace)
+library(VIM)
+df <- kNN(df, k=3)
+# Perdó pel warning, no el sé treure.
+
+df <- df[,1:11]
+
+head(df[33:39,4], 7)
+
+sum(is.na(df))
+# Ja no queden valors nuls
+
+```
+
+
+## 5 Valors extrems
+
+Analitzar la presència de possibles valors extrems (outliers) en les variables pes, diàmetre biparietal i diàmetre abdominal. Per això, dibuixeu diagrames de caixa i també feu servir els resultats de la funció boxplot.stats. Un cop identificats, investigar les possibles causes d’aquests valors extrems i decidiu una estratègia apropiada, en funció d’aquesta anàlisi. L’estratègia pot ser eliminar els valors extrems, realitzar imputacions sobre els valors extrems o simplement mantenir els valors extrems pel seu valor explicatiu en el conjunt de dades. Justifiqueu les vostres eleccions.
+
+
+```{r chunck13}
+
+b <- boxplot(df[4],main="Pes", col="gray")
+# En efecte, amb el boxplot vec un outlayer.
+
+# Veiem aquest outlier.
+b$out
+
+# És una mica sospitós que quatre nens pesin exactament 4.850kg.
+
+# On són localitzats aquest outliers.
+which(df[4] == 4850, arr.ind=TRUE)
+
+df[133,4]
+dfOriginal[133,5]
+
+df[151,4]
+dfOriginal[151,5]
+
+# En l'original són 4.85 kg, no m'he equivocat en la conversió.
+
+
+# Si miro aquestes quatre columnes
+df[c(133,151,199,264),]
+
+# Vec que són de quatre hospitals de ciutats diferents, en hores i dies diferetns. Les setmanes de gestació i els diàmetre són exactament iguals entre ells. En aquest cas té sentit,si nadons amb el mateix diàmetre i setmanes de gestació, han de tenir pesos semblants. Encara així trobo sospitós que siguin quatre valors exactes, però suposo que es podria dònar el cas si en aquests hospitals tenen un arrodoniment cada 50 grams. 
+
+# Per aquesta raó opto per deixar el outlayer, ja que he vist que no sembla una errata de preprocessament ni deu ser d'introducció de les dades ja que els diàmetres i setmanes de gestació són exactament iguals mentre que el dia ni el temps ni el sexe ho són. A més, com veurem a continuació, els valors de diàmetre són totalment normals, o almenys no són outliers.
+
+
+
+# Pel que fa als diàmetres
+
+
+b <- boxplot(df[5],main="BPD", col="gray")
+
+b$out
+
+# On són localitzats aquest outliers.
+which(df[5] < 75, arr.ind=TRUE)
+
+df[c(4,5,16,63,78,95,127,134,140,155,194,210,240,248,286),]
+
+# Igual que abans, no crec que sigui bona idea borrar aquest outliers perquè semblen dades autèntiques, hospitals diferents, dia i hores diferents. Hi ha una probabilitat de que el nadó segui físicament petit si es cumpleix que són 33 setmanes de gestiació i la mare és fumadora.
+
+
+
+b <- boxplot(df[6],main="AD", col="gray")
+
+b$out
+
+which(df[6] < 75, arr.ind=TRUE)
+which(df[6] > 130, arr.ind=TRUE)
+
+df[c(4,63,95,194,210,240,3,47,173,183,196),]
+
+
+# Per la mateixa raó que abans no puc esborrar aquestes dades perquè són uns pocs nadons que pesen poc i s'han gestat poques setmanes i la mare és fumadora. O bé són nados que pesen molt, gestats moltes setmanes i de mares sanes. Tot i ser valors "extrems" són valors correctes.
+
+
+```
+
+
+
+## 6 Taula resum de les variables qualitatives
+
+Realitzar un resum descriptiu dels valors de les variables qualitatives.
+
+```{r chunck14}
+
+summary(df[1], maxsum = 20)
+
+# Es mostra els diferents hospitals d'on s'han agafat les dades.
+
+summary(df[2], maxsum = 20)
+
+# Les diferentes ciutats espanyoles on són situats físicament els hospitals anteriors.
+
+summary(df[3], maxsum = 20)
+# El dia de la setmana en que va nàixer el nado.
+
+summary(df[7], maxsum = 20)
+
+# Diferenciar si el nadó és mascle o femella.
+
+summary(df[9], maxsum = 20)
+
+# Separació entre si la mare del nadó, és o no és fumadora.
+
+```
+
+
+
+## 7 Taula resum de les variables quantitatives
+
+Realitzar una taula de la tendència central i dispersió de les variables quantitatives. Feu servir mesures robustes i no robustes.
+
+
+```{r chunck15}
+
+# Per mostrar visualment la tendencia central, trobo que el gràfic on és podrà apreciar millor és un boxplot.
+
+# Pes
+summary(df$BW)
+b <- boxplot(df[4],main="Pes", col="gray")
+
+
+
+
+# Diàmetre biparietal
+summary(df$BPD)
+b <- boxplot(df[5],main="BPD", col="gray")
+
+# Diàmetre abdominal
+summary(df$AD)
+b <- boxplot(df[6],main="AD", col="gray")
+
+# Setmanes de gestació
+summary(df$Ge)
+b <- boxplot(df[8],main="Ge", col="gray")
+
+
+```
+
+
+## 8 Crear el fitxer net
+
+Graveu les dades preprocessades en un fitxer anomenat “BWprocessed.csv”.
+
+
+```{r chunck16}
+write.csv(df, "C:\\Users\\garridom\\Documents\\UOC\\Estadistica\\A1\\BWprocessed.csv", row.names = FALSE)
+
+```
+
+## 9 Documentació
+
+Documentar de forma resumida els canvis introduïts en el fitxer durant el preprocés d’ell mateix. Cal mostrar-se en forma de taula, indicant el tipus de preprocés aplicat en cada cas. Cal explicar el detall del preprocés aplicat. Per exemple, no és suficient dir “s’ha normalitzat la variable BW”. En tot cas, s’hauria d’indicar si s’ha reemplaçat la coma pel punt decimal, o si s’han arrodonit decimals, etcètera. Heu de ser específics, ja que l’informe ha de ser útil com a documentació dels canvis realitzats.
+
+
+
+```{r chunck17}
+library(knitr)
+library(kableExtra)
+df <- data.frame(Cat = c("Hospital", "Ciutat", "Dia de la setmana", "Sexe", "Mare fumadora", "Pes", "Diàmetre parietal", "Diàmetre abdominal", "Setmanes de gestació", "Temps"),Sad = linebreak(c("Veure que els hospitals concorden amb al ciutat on són", "Majúscules", "Pasar de variable numèrica, a String (factor)", "Reconvertir errates a l'introducció de les dades", "Cap", "Canvi de tipus de dades, canvi de mesura, suprimir o normalitzar caràcters rebundants", "Suprimir caracters rebundants", "Suprimir caràcters rebundants", "Arrodoniment", "Conversió i separació en dos columnes")),  Happy = linebreak(c("Escriure la ciutat corresponent de l'hospital on es troba físicament", "En algún cas, la ciutat de Sevilla i Valencia, els hi faltava la primera lletra en majúscula", "Fer set simples modificacions, si és 1, Dilluns, si és 7 Diumenge...", "Les dades han de ser M o F, trobar les altres formes que s'han introduït el sexe, tal com fem, nen. ", "Totes les dades eren correctes", "Treure caràcters (lletres), pasar les dades a numèriques, vigilar si són comes o punts, multiplicar per 1000 en el cas que siguin quilos", "Treure els caràcters d'unitat de mesura", "Treure els caràcters d'unitat de mesura", "Arrodonir al enter més pròxim","Primerament he substituit les comes per punts, l'he pasat de variable factor a variable numèrica. He convertit els minuts en format HH:MM. He eliminat la columa de temps i he creat dos de noves, una per la hora, l'altre pels minuts.")))
+
+kable(df, col.names = c("", "Tipus de preprocés", "Descripció"), escape = F, caption = "Documentació") %>%
+kable_styling(latex_options = "hold_position")
+```
+
+A més de treure totes les dades nul·les.
