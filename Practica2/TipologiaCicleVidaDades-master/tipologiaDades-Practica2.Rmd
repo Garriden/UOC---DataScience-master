@@ -1,0 +1,771 @@
+---
+title: "TipologiaDades-Practica2"
+author: "Silvia Benet, Marc Garrido"
+date: "15/5/2020"
+output:
+  html_document:
+    highlight: default
+    number_sections: no
+    theme: cosmo
+    toc: yes
+    toc_depth: 3
+  word_document: default
+  pdf_document:
+    highlight: zenburn
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+******
+******
+
+# 1. Descripció del Dataset.
+
+Hem decidit utilitzar el dataset red-wine-quality:
+
+https://www.kaggle.com/uciml/red-wine-quality-cortez-et-al-2009
+
+"P. Cortez, A. Cerdeira, F. Almeida, T. Matos and J. Reis.
+Modeling wine preferences by data mining from physicochemical properties. In Decision Support Systems, Elsevier, 47(4):547-553, 2009."
+
+L'hem triat perquè considerem que ens permetrà provar diferents metodologies ja que té una quantitat prou important de variables d'entrada i a més conté una variable de sortida que ens permetrà entrenar i testejar els algoritmes.
+
+El que pretenem respondre és a la pregunta de quina variable té més pes en la qualitat del vi i segons uns valors donats de les variables d'entrada volem saber de quina qualitat serà el vi resultant. Per tant aplicarem diferents algoritmes que ens facin una predicció de la variable qualitat. 
+
+
+```{r }
+
+library(ggplot2)
+library(dplyr)
+library(corrplot)
+
+wineQualityRed <- read.csv('winequality-red.csv', stringsAsFactors = FALSE, header = TRUE, sep=";")
+
+names(wineQualityRed) <- c("fixedacidity",
+   "volatileacidity",
+   "citricacid",
+   "residualsugar",
+   "chlorides",
+   "freesulfurdioxide",
+   "totalsulfurdioxide",
+   "density",
+   "pH",
+   "sulphates",
+   "alcohol",
+   "quality")
+
+
+head(wineQualityRed)
+
+```
+
+## Descripció de les variables.
+
+1 - fixed acidity: Quantitat d'àcid del vi.
+
+2 - volatile acidity: La quantitat d'àcid acètic que té el vi.
+
+3 - citric acid: La quantitat d'àcid cítric que té el vi.
+
+4 - residual sugar: La quantitat del sucre que resta després de la fermentació.
+
+5 - chlorides: La quantitat de sal.
+
+6 - free sulfur dioxide: La quantitat "lliure" de SO2.
+
+7 - total sulfur dioxide: La quantitat total de SO2.
+
+8 - density: La densitat del líquid
+
+9 - pH: Grau d'acidessa.
+
+10 - sulphates: La qantitat de sulfats que té el vi.
+
+11 - alcohol: EL percentatge d'alcohol que conté el vi.
+
+12 - quality: La variable output, la puntuació del vi.
+
+
+
+# 2. Integració i selecció de les dades.
+
+En aquest cas no veiem necessari eliminar cap atribut, hi ha uns de més importants d'altres, però amb 11 atributs no voldriem eliminar-ne cap.
+
+## Tipus de les variables.
+
+```{r} 
+library(knitr)
+library(kableExtra)
+res <- sapply(wineQualityRed,class)
+kable(data.frame(variables=names(res),clase=as.vector(res)))
+```
+
+Veiem que totes les variables són de tipus numeric, excepte l'última que és classe integrer.
+
+Deixarem l'últim atribut com a enter, ja que aquest és un número del zero al deu i és la classe output, la que es vol predir.
+
+
+# 3. Neteja de les dades
+
+Comprovem l'estructura del joc de dades
+
+```{r }
+str(wineQualityRed)
+```
+
+Mirem un resum per fer un cop d'ull quins valors tenim
+```{r }
+summary(wineQualityRed)
+```
+Amb un summary podem veure més o menys com són les dades per fer-nos una primera idea.
+
+
+## 3.1 Identificació de valors nuls.
+
+Mirarem si hi ha zeros i nuls
+```{r }
+colSums(is.na(wineQualityRed))
+colSums(wineQualityRed=="")
+
+```
+No hi ha valors a 0 ni nuls. No semba que hi hagi valors perduts (ni N/A ni altres valors). 
+
+
+## 3.2 Identificació de valors extrems (outliers).
+
+Utilitzant boxplot comprovarem si les variables tenen valors extrems i si aquests valors poden ser considerats vàlids i per tant s'han de tenir en compte o si al contrari són valors invàlids i s'han de tractar o eliminar. 
+
+```{r }
+par(mfrow=c(2,2))
+boxplot(wineQualityRed$fixedacidity,xlab="fixedacidity")
+boxplot(wineQualityRed$volatileacidity,xlab="volatileacidity") 
+boxplot(wineQualityRed$citricacid, xlab="citricacid")
+boxplot(wineQualityRed$residualsugar,xlab="residualsugar")
+boxplot(wineQualityRed$chlorides, xlab="chlorides")
+boxplot(wineQualityRed$freesulfurdioxide, xlab ="freesulfurdioxide")
+boxplot(wineQualityRed$totalsulfurdioxide,xlab ="totalsulfurdioxide" )
+boxplot(wineQualityRed$density, xlab ="density")
+boxplot(wineQualityRed$pH, xlab ="pH")
+boxplot(wineQualityRed$sulphates, xlab ="sulphates")
+boxplot(wineQualityRed$alcohol,xlab="alcohol")
+boxplot(wineQualityRed$quality, xlab ="quality")
+
+```
+
+Citricacid té només un valor que està allunyat de la resta. Mirem quin és:
+```{r }
+
+boxplot(wineQualityRed$citricacid, plot =FALSE)$out
+
+```
+Amb un summary podrem veure quins són els valors i quin és valor màxim per veure si realment està tan allunyat i és un valor no vàlid.
+
+```{r }
+summary(wineQualityRed$citricacid)
+plot(wineQualityRed$citricacid)
+```
+
+El valor que semblaria outiler és 1, el rang de la variable oscil.la entre 0 i 1, i hi ha valors de 0,8 així que no sembla pas un error. El deixarem tal com està.
+
+Comprovarem totalsulfurdioxide perquè també sembla que tingui alguns valors allunyats:
+
+```{r }
+boxplot(wineQualityRed$totalsulfurdioxide, plot =FALSE)$out
+summary(wineQualityRed$totalsulfurdioxide)
+plot(wineQualityRed$totalsulfurdioxide)
+```
+
+Aquests dos valors si que es veuen ben diferenciats de la resta. Mirem quina informació dóna la seva fila per veure si discernim si són valors correctes o incorrectes.
+El valor màxim és 289:
+```{r }
+
+wineQualityRed[wineQualityRed$totalsulfurdioxide==289,]
+wineQualityRed[wineQualityRed$totalsulfurdioxide==278,]
+
+```
+
+Els valors de totes les variables semblen normals per tant suposarem que els valors d'aquesta variable són correctes. Tal com comenta a:https://archive.ics.uci.edu/ml/datasets/wine+quality els algoritmes d'outliers poden ajudar a detectar els vins excelents o molt pobres i de fet es pot veure que aquests dos valors tenen qualitat = 7 que és alta. Veurem més endavant si aquesta variable té un pes important en la qualitat dels vins.
+
+La resta de variables no sembla que presentin outliers. Hi ha alguns valors fora de la normalitat però no s'en veu cap sol i molt allunyat de tota la resta.
+
+
+
+
+# 4. Anàlisi de les dades.
+
+## 4.1. Selecció dels grups de dades que es volen analitzar/comparar.
+
+Podem comprovar primerament la variable qualitat, que seria la variable que es voldria predir, la variable que ens mostra si un vi és o no és bo.
+
+```{r }
+summary(wineQualityRed$quality)
+```
+
+
+Veiem que la majoria dels vins són aprovats, la mitjana és 5.636 i la mediana 6.
+Serà més fàcil veure-ho amb representacions visuals.
+
+
+```{r }
+table(wineQualityRed$quality)
+```
+
+```{r }
+
+hist(wineQualityRed$quality, 
+     main="Histogram for quality", 
+     xlab="quality", 
+     col="chocolate",
+     breaks=seq(min(wineQualityRed$quality)-0.5, max(wineQualityRed$quality)+0.5))
+```
+
+
+Ja que agafem totes les variables, estaria bé analitzar-les totes. 
+
+```{r }
+par(mfrow = c(2,2))
+
+hist(wineQualityRed[[1]], 
+     main=colnames(wineQualityRed)[1], 
+     col="chocolate")
+
+hist(wineQualityRed[[2]], 
+     main=colnames(wineQualityRed)[2], 
+     col="chocolate")
+
+
+hist(wineQualityRed[[3]], 
+     main=colnames(wineQualityRed)[3], 
+     col="chocolate")
+
+hist(wineQualityRed[[4]], 
+     main=colnames(wineQualityRed)[4], 
+     col="chocolate")
+
+par(mfrow = c(2,2))
+
+hist(wineQualityRed[[5]], 
+     main=colnames(wineQualityRed)[5], 
+     col="chocolate")
+
+hist(wineQualityRed[[6]], 
+     main=colnames(wineQualityRed)[6], 
+     col="chocolate")
+
+hist(wineQualityRed[[7]], 
+     main=colnames(wineQualityRed)[7], 
+     col="chocolate")
+
+hist(wineQualityRed[[8]], 
+     main=colnames(wineQualityRed)[8], 
+     col="chocolate")
+
+par(mfrow = c(2,2))
+
+hist(wineQualityRed[[9]], 
+     main=colnames(wineQualityRed)[9], 
+     col="chocolate")
+
+hist(wineQualityRed[[10]], 
+     main=colnames(wineQualityRed)[10], 
+     col="chocolate")
+
+
+hist(wineQualityRed[[11]], 
+     main=colnames(wineQualityRed)[11], 
+     col="chocolate")
+```
+
+
+## 4.2. Comprovació de la normalitat i homogeneïtat de la variància.
+
+
+```{r }
+library(ggpubr)
+
+
+ggqqplot(wineQualityRed[[1]], title = colnames(wineQualityRed)[1])
+ggqqplot(wineQualityRed[[2]], title = colnames(wineQualityRed)[2])
+ggqqplot(wineQualityRed[[3]], title = colnames(wineQualityRed)[3])
+ggqqplot(wineQualityRed[[4]], title = colnames(wineQualityRed)[4])
+ggqqplot(wineQualityRed[[5]], title = colnames(wineQualityRed)[5])
+ggqqplot(wineQualityRed[[6]], title = colnames(wineQualityRed)[6])
+ggqqplot(wineQualityRed[[7]], title = colnames(wineQualityRed)[7])
+ggqqplot(wineQualityRed[[8]], title = colnames(wineQualityRed)[8])
+ggqqplot(wineQualityRed[[9]], title = colnames(wineQualityRed)[9])
+ggqqplot(wineQualityRed[[10]], title = colnames(wineQualityRed)[10])
+ggqqplot(wineQualityRed[[11]], title = colnames(wineQualityRed)[11])
+ggqqplot(wineQualityRed[[12]], title = colnames(wineQualityRed)[12])
+
+```
+
+Tot i que la majoria de variables intenten seguir la línea recta, els punts no són dins de la zona grisa. Això vol dir que les variables no segueixen la normalitat.
+
+Si mirem el test de shapiro per extreure'n la p-value:
+
+```{r }
+shapiro.test(wineQualityRed[[1]])
+shapiro.test(wineQualityRed[[2]])
+shapiro.test(wineQualityRed[[3]])
+shapiro.test(wineQualityRed[[4]])
+shapiro.test(wineQualityRed[[5]])
+shapiro.test(wineQualityRed[[6]])
+shapiro.test(wineQualityRed[[7]])
+shapiro.test(wineQualityRed[[8]])
+shapiro.test(wineQualityRed[[9]])
+shapiro.test(wineQualityRed[[10]])
+shapiro.test(wineQualityRed[[11]])
+shapiro.test(wineQualityRed[[12]])
+```
+
+Cridant al shapiro test, també veiem que la p-value és més baixa del 5% de grau de confiança (0.05). Tornem a concluir que ninguna variable segueix una normalitat estricta.
+
+Per últim comprovarem la normalitat amb el test de Anderson-Darling per totes les variables:
+
+```{r }
+
+library(nortest)
+
+hist(wineQualityRed[,1])
+ad.test(wineQualityRed[,1])
+
+alpha <- 0.05
+col.names = colnames(wineQualityRed)
+
+for (i in 1:ncol(wineQualityRed)) {
+
+   if (is.integer(wineQualityRed[,i]) | is.numeric(wineQualityRed[,i])) {
+      p_val = ad.test(wineQualityRed[,i])$p.value
+      if (p_val < alpha) {
+       cat("No Normal: ") + cat(col.names[i]) + cat("- p-value:") + cat(p_val) + cat("\n")
+      }
+      else {
+         cat ("Normal: ") + cat(col.names[i]) + cat("- p-value:") + cat(p_val) + cat("\n")
+      }
+   }
+}
+
+```
+Segons el test d'Anderson-Darling no hi ha cap variable que segueixi una distribució normal.
+
+## 4.3. Aplicació de proves estadístiques per comparar els grups de dades.
+
+### Regressió lineal simple.
+
+Começarem per aplicar una regressió lineal per veure la relació entre dues variables, podem començar per les variables quality i alcohol.
+
+```{r }
+library(ggpubr)
+theme_set(theme_pubr())
+
+ggplot(wineQualityRed, aes(x = quality, y = alcohol)) + geom_point() + stat_smooth(method = lm)
+```
+
+Els punts s'allunyen molt de la línea recta, aquesta regressió no és bona per una variable entera com la qualitat respecte una double en un rang determinat.
+
+
+```{r }
+mod<-lm(quality ~ alcohol, wineQualityRed)
+summary(mod)
+```
+
+La R^2 és molt alta, amb això veiem que és molt alte, per tant les dues variables no tenen massa relació.
+
+
+Si probem amb comparant altres variables:
+
+```{r }
+ggplot(wineQualityRed, aes(x = pH, y = alcohol)) + geom_point() + stat_smooth(method = lm)
+```
+
+```{r }
+ggplot(wineQualityRed, aes(x = sulphates, y = alcohol)) + geom_point() + stat_smooth(method = lm)
+```
+
+Veiem que no tenen massa relació entre elles, almenys fent regressions lineals.
+
+### Regressió lineal múltiple.
+
+Si probem amb una regressió lineal múltiple, amb la variable quality més alcohol i pH:
+
+```{r }
+mod <- lm(quality ~ alcohol + pH, data = wineQualityRed)
+
+summary(mod)
+```
+
+Veiem que tampoc existeix massa relació.
+
+### Busquem les correlacions que hi ha entre variables
+
+```{r }
+
+
+par(mfrow = c(1,1))
+correlacio.wineQualityRed <- cor(wineQualityRed)
+corrplot(correlacio.wineQualityRed, method = 'number')
+
+cat("\n")
+```
+
+Les variables que estàn més correlacioandes entre elles són pH i fixedAxcidity. Les següents més relacionades són:
+
+* fixedAcidity i citricAcid
+* fixedACidity i density
+* freeSulfurDioxide i totalSulfurDioxide
+
+I les variables que estàn més relacionades amb la qualitat són:
+
+* alcohol 
+* volatileacidity
+
+
+
+### Knn
+
+Per intentar predir la qualitat del vi segons els variables que tenim d'entrada, aplicarem l'algoritme K-Nearest Neighbors (Knn)
+
+Per tal de poder classificar més fàcilment el primer que farem és dicretitzar la variable qualitat. Tenint en compte que el que volem és saber si el vi tindrpa qualitat alta o baixa per discretitzarem utitilitzant intervals lògics.Tindrem els següents nivells:
+
+Qualitat:
+
+ * < 5 -> Baixa
+ * 5-> Mitja baixa
+ * 6 -> Mitja alta
+ * ">" 6 -> Alta
+
+Separem mitja baixa i mitja alta perquè la major part dels registres es troben en aquests dos valors.
+
+```{r }
+
+breaks1 <- c(0,4,5,6,10)
+c <- cut(wineQualityRed$quality,breaks=breaks1, labels = c('Baixa','Mitja baixa','Mitja alta','Alta'))
+
+wineQualityRedD<- wineQualityRed
+wineQualityRedD$quality<- c
+
+plot(wineQualityRedD$quality, main = "Qualitat discretitzada")
+summary(wineQualityRedD$quality)
+
+```
+
+Separarem el dataset en dos datasets, un per entrenar el nostre algoritme (train) i un per testajar com de vàlid és el nostre algoritme (test). 
+Agafarem 2/3 de les dades per crear el conjunt d'entrenament i 1/3 pel conjunt de test.
+
+També separarem la variable de sortida
+```{r }
+
+set.seed(200)
+y <- wineQualityRedD[,12] 
+X <- wineQualityRedD[,1:11] 
+
+set.seed(300)
+
+indexes = sample(1:nrow(wineQualityRedD),size=floor((2/3)*nrow(wineQualityRedD)))
+
+trainMX <- X[indexes,]
+trainMy <- y[indexes]
+testMX  <- X[-indexes,]
+testMy  <- y[-indexes]
+
+```
+Comprovem si les dades entre el set de train i de test shan quedat ben repartides. 
+
+```{r }
+
+prop.table(table(trainMy))
+prop.table(table(testMy))
+
+```
+
+Veiem que sí que es troben ben proporcionats, els porcentatges de vins amb qualitat alta, mitja alta, mitja baixa i baixa són semblants en els dos sets de dades.
+
+Escalarem les variables ja que es troben en escales diferents.
+Calculem K com l'arrel quadrada del número d'observacions (1599). 
+
+```{r }
+library (class)
+library (caret)
+
+wineTrain.Scal <- scale(trainMX, center = TRUE, scale = TRUE)
+wineTest.Scal <- scale(testMX, center = TRUE, scale = TRUE)
+
+
+
+set.seed(678)
+
+wine.knn<- knn(train = wineTrain.Scal, test=wineTest.Scal, cl=trainMy, k=40)
+
+```
+Evaluarem el rendiment del model
+
+```{r }
+confusionMatrix(testMy, wine.knn)
+
+```
+
+ La predicció del model és del 59%, que és un valor molt baix. Si mirem el valor de kappa és del 33%. Si ens hi fixem l'algoritme és incapaç de predir els vins amb qualitat 3, 4 i 8. D'aquests l'encert és 0. Només és capaç de prediure les qualitats mitja baixa, mitja alta i alta amb un encert de 60 % aprox . Per tant el model no ens és massa útil.
+
+ Provem sense factoritzar la variable de sortida a veure si tenim una predicció millor
+```{r }
+
+set.seed(300)
+
+y2 <- wineQualityRed[,12] 
+X2 <- wineQualityRed[,1:11] 
+
+set.seed(456)
+
+indexes2 = sample(1:nrow(wineQualityRed),size=floor((2/3)*nrow(wineQualityRed)))
+
+trainMX2 <- X2[indexes2,]
+trainMy2 <- y2[indexes2]
+testMX2  <- X2[-indexes2,]
+testMy2  <- y2[-indexes2]
+
+prop.table(table(trainMy2))
+prop.table(table(testMy2))
+
+wineTrain.Scal2 <- scale(trainMX2, center = TRUE, scale = TRUE)
+wineTest.Scal2 <- scale(testMX2, center = TRUE, scale = TRUE)
+
+set.seed(555)
+
+wine.knn2<- knn(train = wineTrain.Scal2, test=wineTest.Scal2, cl=trainMy2, k=40)
+
+```
+Evaluarem el rendiment del model
+
+```{r }
+
+confusionMatrix(factor(testMy2), wine.knn2)
+
+```
+
+ El resultat ha estat quasi el mateix. La predicció és del 59 % que és molt baix. Així que no és un model molt bo per esbrinar la qualitat del vi segons les variables d'entrada.
+ 
+ El valor de Kappa és també molt baix, 33 % i ens reforça encara més la idea que aquest model no ens és massa útil.
+ 
+ 
+## Arbres de decisió.
+
+Un altre métode, fàcil per a predir una variable en concret.
+
+Bàsicament crearà un arbre binari, respecte als atributs del dataset, plantejarà condicions i depenent si la resposta és veritat o mentida (boolean), seguirà un camí o un altre.
+
+Finalment, al arribar a la fulla, es podrà predir, en aquest cas, la puntuació d'un vi.
+
+```{r }
+#install.packages(rpart)
+#install.packages(rpart.plot)	
+library(rpart)
+library(rpart.plot)
+
+decisionTreesPart <- rpart(quality ~. , data = wineQualityRed)
+decisionTreesPart
+```
+
+Representació de l'arbre:
+
+```{r }
+rpart.plot(decisionTreesPart)
+```
+
+Partirem el dataset en dues parts, una per entrenar l'algorisme, un altre de més petit per a comprovar si les prediccions són prou correctes.
+
+```{r }
+train <- wineQualityRed[1:3750, ]
+test <- wineQualityRed[3751:4898, ]
+```
+
+```{r }
+predicted <- predict(decisionTreesPart, test)
+summary(predicted)
+```
+
+El resultat predit, de mitjana la seva mediana és una puntuació de 5.4, no varia gaire.
+
+```{r }
+summary(wineQualityRed$quality)
+```
+
+Si ho comparem amb els resultats reals, veiem que la mitjana s'acosta, però és molt més variable el real.
+
+Si agafem una mostra d'un vi inventada, 
+
+```{r }
+test <- data.frame(fixedacidity = 8, volatileacidity = 0.3, citricacid = 0.42, residualsugar = 10.5, chlorides = 0.1, freesulfurdioxide = 47, totalsulfurdioxide = 186, density = 0.9955, pH = 3.10, sulphates = 0.90, alcohol = 13)
+
+test
+```
+
+Volem predir la puntuació d'aquest vi inventat,
+
+```{r }
+test_pred <- predict(decisionTreesPart, test)
+test_pred
+```
+
+Aquest vi, ens dona una puntuació de 6.65.
+
+
+## Random Forests.
+
+Una petita millora, s'aconsegueix amb l'algorisme de random forests. És un algorisme que bàsicament és acumular diferents random forests per aconseguir millor accuracy.
+
+Primerament, és recomenable crear un nou atribut on, depenent de la qualitat del vi, el calssifiquem com a bo, normal o dolent. Així ens serà molt més fàcil de predir la seva qualitat amb aquest algorisme.
+
+```{r }
+wineQualityRed$taste <- ifelse(wineQualityRed$quality < 5, "bad", "good")
+wineQualityRed$taste[wineQualityRed$quality == 5] <- "normal"
+wineQualityRed$taste[wineQualityRed$quality == 6] <- "normal"
+wineQualityRed$taste <- as.factor(wineQualityRed$taste)
+barplot(table(wineQualityRed$taste))
+```
+
+Montarem millor el nostre train i test (80% i 20% respectivament).
+Aplicarem l'algorisme i farem una primera predicció.
+
+```{r }
+library(randomForest)
+
+ind <- sample(2, nrow(wineQualityRed), replace = TRUE, prob=c(0.8, 0.2))
+rf <- randomForest(taste ~ . - quality, data=wineQualityRed[ind == 1,])
+pred <- predict(rf, wineQualityRed[ind == 2,])
+
+rf
+```
+
+Aquí veiem, pel train, la matriu de confusió. Veiem que li és molt difícil calcular si un vi és dolent, tenim un error de la meitat quen un vi és bo, però quan un vi és normal, té un error del només 0.0265%.
+
+
+```{r }
+table(pred, data=wineQualityRed[ind == 2,]$taste)
+```
+
+Mirem la taula de predicció del test, semblant a la del train.
+
+Calculem l'accuracy:
+
+```{r }
+sum(pred==wineQualityRed[ind == 2,]$taste) / nrow(wineQualityRed[ind == 2,])
+```
+
+
+Obtenim una predicció amb un acert del 85%.
+
+# 5. Representació dels resultats a partir de taules i gràfiques.
+
+La principal taula, la més important d'aquest data set, és, sens dubte, la de l'atribut de qualitat.
+
+Aquest atribut ja ens ve donat pel dataset per defecte, normalment aquest dataset s'utilitza per a crear models de preducció, especialment per a predir aquest atribut.
+
+```{r }
+hist(wineQualityRed$quality, 
+     main="Histogram for quality", 
+     xlab="quality", 
+     col="blue",
+     breaks=seq(min(wineQualityRed$quality)-0.5, max(wineQualityRed$quality)+0.5))
+
+barplot(table(wineQualityRed$taste), col="blue")
+```
+
+És curiós com la gran majoria de puntuació de qualitat estan compresses entre el 5 i el 6.
+
+De fet hem creat una nova visualització, ja mostrada en apartats anteriors, per a veure-ho més clar i qeu sigui més fàcil de predir. Aquesta nova visualització agrupa les puntuacions de 5 i 6 com a vins de gust "normal", mentres qeu si supera la puntuació de 6, es considera un vi bo. Si és menor de 4, es considera un vi dolent.
+
+
+   Després de comprovar que les dades no contenien valors nuls hem comprovat els outliers. Pel que hem vist, hem trobat alguns valors outliers, pero semblaven valors dins d'un rang correcte, per tant no hem fet res amb ells. Un exemple és totalSulfureDioxide. Hem trobat dos valors outliers de la variable totalSulfureDioxide i hem vist que els dos registres tenien qualitat = 7. Mirem en una gràfica la relació entre totalSulfureDioxide i qualitat: 
+
+```{r }
+filas=dim(wineQualityRed)[1]
+
+wineQualityRed.f<- wineQualityRed
+wineQualityRed.f$quality<- factor(wineQualityRed$quality)
+
+ggplot(data=wineQualityRed.f[1:filas,],aes(x=totalsulfurdioxide,fill=quality))+geom_bar()
+
+```
+
+Veient el gràfic està clar que no hi ha una relació directa entre qualitat i totalSulfuerDioxide. A valor més alts de totalSulfureDioxide no impliquen pas major qualitat en general.  Només es dóna el cas en dos outliers però sembla una situació excepcional. També veurem més endavant en la matriu de correlació que les dues variables estàn poc relacionades.
+
+ Hem comprovat la correlació de variables, per intentar descobrir quina està més relacionada amb qualitat o quines estàn més correlacionades entre elles. Aquest és el resultat:
+
+```{r }
+ corrplot(correlacio.wineQualityRed, method = 'number')
+```
+
+ La variable que està més correlacionada amb qualitat és alcohol, però amb un valor de 0,48 que és un valor molt baix. Per tant no es pot establir una relació molt forta entre cap variable i la qualitat. Entre variables la màxima correlació és entre pH i fixedAcidity amb 0.68 que tampoc és un valor molt alt. Per tant la conclusió és que les correlacions no ens dónen informació transcendent.
+ 
+ Hem aplicat una sèrie de models per intentar predir la variable qualitat a partir dels valors de les nostres variables d'entrada. Els models aplicats i els resultats són els següents:
+ 
+
+ **Regressió lineal **
+ 
+ No podem extreure'n bones conclusions a partir de la regressió lineal, l'atribut de qualitat respecte la de l'alcohol, al ser no continua aquesta, ens és impossible trobar cap tipus de correlació entre aquestes dues variables mitjançant la regressió lineal.
+ 
+ No veiem composició de variables on tinguin una forta correlació entre elles, almenys utilitzant la regressió lienal.
+ 
+
+ **knn (K nearest neighbours) **
+ 
+  Hem aplicat el model knn i l'hem entrenat amb un conjunt d'entrenament del 70 % dels registres i un de test del 30 %. El resultat que hem obtigut de predicicó amb el nostre conjunt de test és el següent:
+  
+```{r }
+
+confusionMatrix(factor(testMy2), wine.knn2)
+
+```
+ 
+ El model ens prediu amb una precisió del 59% en general, però realment si mirem cada valor de qualitat el model és incapaç de pedir cap qualitat de valor 3, 4 ni 8. ELs valors de predicció individualment són doncs:
+ 
+ * Qualitat 3-> 0
+ * Qualitat 4-> 0
+ * Qualitat 5 -> 68%
+ * Qualitat 6 -> 54%
+ * Qualitat 7 -> 39%
+ * Qualitat 8 -> 0
+ 
+ Per tant el model només ens prediu les qualitats intermèdies del vi, de 5 o 6 amb un 60 % de probabilitat d'encert. No crec que el model ens sigui molt útil ja que el que més ens interessaria també seria poder predir les qualitats bones  o molt dolentes. 
+
+ Hem provat també d'escalar la variable qualitat repartint les dades entre: Qualitat baixa, mitja baixa, mitja alta i alta, però el resultat ha estat molt semblant a l'anterior. El model ens prediu les qualitats mitjes amb una precisió d'un 60 %.
+ 
+ **Decision trees **
+ 
+ El punt fort dels decision trees és que visualment és molt fàcil de veure el camí que recorre per a escollit el valor d'un atribut, en aquest cas, la puntuació sobre la qualitat d'un vi.
+ 
+ 
+```{r }
+ rpart.plot(decisionTreesPart)
+```
+ 
+  L'atribut més important és clarament la quantitat d'alcohol, no només perqué és el primer node en particionar el camí sinó que més abaix també és crucial alhora de predir els vins de més qualitat.
+  Els altres atributs també importants veiem que serien els dels sulfats, volatilicitat i potser el pH. 
+  
+  Ens atreveriem a eliminar tots els atributs exceptuant aquest quatre, almenys a l'hora de fer prediccions amb decision trees ja qeu veiem que els altres no esl té en compte. Un model, com més simple sigui el seu camí de decissions i menys atributs siguin implicats, més simple serà la predicció.
+  
+  Pel que fa al random forest, com el seu nom indica, només és una seqüència de decision trees.
+  
+# 6. Resolució del problema
+ 
+ La principal conclusió que se n'extrau és que la mitjana de puntuació d'un vi és del 5 i 6, la majoria de vins es mouen entre aquests dos valors.
+ 
+ Hi ha molts atributs que no tenen res a veure amb la qualitat d'un vi.
+ 
+ La qualitat d'un vi, és un valor molt subjectiu, imposat per humans. No és com per exemple la qualtitat d'alcohol on la podem mesurar exactament.
+ 
+ Sens entrar massa a fons en temes de prediccions, obtenim la qualitat d'un vi amb més d'un 85% d'acert. Explorant altres treballs d'aquest mateix dataset en webs de data-sciene, no es veu que pasin del 90% d'acert. Així que crec que podem dir que les nostres prediccions són prou acertades.
+ 
+# 7. Exportació del codi
+
+El codi és publicat al github:
+https://github.com/silviabenet/TipologiaCicleVidaDades
+
+Així com el HTML per presentar i el dataset de sortida.
+ 
+```{r }
+ write.csv(wineQualityRed, file = "wineQualityRed_output.csv")
+```
